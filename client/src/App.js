@@ -1,5 +1,16 @@
 import React from "react";
+import { Provider } from 'react-redux'
+
+import Map from './components/Map/Map'
+import store from './components/redux/store/store'
+import './App.css'
 
 export default function App() {
-  return <div>App</div>;
+  return (
+    <Provider store={store}>
+       <div style={{height: `100%`, display: 'flex'}}>
+        <Map />
+       </div>
+    </Provider>
+  )
 }
