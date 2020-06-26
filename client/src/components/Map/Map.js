@@ -57,9 +57,10 @@ export class Map extends Component{
       console.log(this.props)
       const { data } = this.props
       const { activeMarker, scriptReady } = this.state
+   
       return (
          //GoogleMap renders only after script is loaded otherwise window.google in undefined
-         <LoadScriptNext googleMapsApiKey="AIzaSyBUnmyutouVPRXi2kx960gcSb6Ac17ty1g" onLoad={this.scriptLoaded}>
+         <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY} onLoad={this.scriptLoaded}>
             <h1>Fuber</h1>
             {scriptReady && 
             <GoogleMap
