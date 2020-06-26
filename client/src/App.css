@@ -1,0 +1,24 @@
+html, body {
+   height: 100%;
+   margin: 0;
+   padding: 0;
+ }
+ 
+ #root{
+   height: 100%
+ }
+ 
+ h1 {
+   position: absolute;
+   margin: 0;
+   padding: 0;
+   top: 1rem;
+   left: 1rem;
+   z-index: 10;
+   color: rgb(216, 216, 216);
+   text-shadow:
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+     -1px 1px 0 #000,
+      1px 1px 0 #000;
+ }
