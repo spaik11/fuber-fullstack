@@ -31,9 +31,10 @@ module.exports = {
         secure: process.env.NODE_ENV === "production" ? true : false,
       });
 
-      res.json({
-        message: "User created",
-      });
+      createdUser = createdUser.toObject();
+      delete createdUser.password;
+
+      res.json(createdUser);
     } catch (error) {
       res.status(500).json({
         message: getErrorMessage(error),
@@ -71,7 +72,7 @@ module.exports = {
           foundUser = foundUser.toObject();
           delete foundUser.password;
 
-          res.json({ user: foundUser });
+          res.json(foundUser);
         }
       }
     } catch (error) {
