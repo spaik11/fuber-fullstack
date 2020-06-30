@@ -2,7 +2,11 @@ import Axios from "../lib/Axios/Axios";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 
-import { LOGIN_USER, LOGOUT_USER } from "../constants/authUserConstants";
+import {
+  LOGIN_USER,
+  LOGOUT_USER,
+  REQUEST_HELP,
+} from "../constants/authUserConstants";
 
 export const createUser = (userInfo) => async (dispatch) => {
   try {
@@ -37,7 +41,7 @@ export const loginUser = (userInfo) => async (dispatch) => {
 
     return Promise.resolve();
   } catch (e) {
-    console.log(e)
+    console.log(e);
     if (e.message) {
       return Promise.reject(e.message);
     } else {
@@ -59,7 +63,7 @@ export const isAuthenticated = () => {
 };
 
 export const setUserAuth = (jwtToken) => async (dispatch) => {
-  let decodedToken = jwt_decode(jwtToken);
+  let decodedToken = await jwt_decode(jwtToken);
 
   dispatch({
     type: LOGIN_USER,
@@ -91,4 +95,11 @@ export const getRefreshToken = () => {
   } else {
     return false;
   }
+};
+
+export const requestHelp = (mode) => (dispatch) => {
+  dispatch({
+    type: REQUEST_HELP,
+    payload: mode,
+  });
 };

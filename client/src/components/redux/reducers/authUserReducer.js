@@ -1,8 +1,13 @@
-import { LOGIN_USER, LOGOUT_USER } from "../constants/authUserConstants";
+import {
+  LOGIN_USER,
+  LOGOUT_USER,
+  REQUEST_HELP,
+} from "../constants/authUserConstants";
 
 const initialState = {
   isAuthenticated: false,
   user: null,
+  requestHelp: null,
 };
 
 export default function (state = initialState, action) {
@@ -16,6 +21,11 @@ export default function (state = initialState, action) {
       return {
         isAuthenticated: false,
         user: null,
+      };
+    case REQUEST_HELP:
+      return {
+        ...state,
+        requestHelp: action.payload,
       };
     default:
       return state;

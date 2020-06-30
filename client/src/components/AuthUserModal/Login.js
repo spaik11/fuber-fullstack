@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button } from "@material-ui/core";
 import validator from "validator";
@@ -54,10 +54,6 @@ const Login = (props) => {
   });
   const [canSubmit, setCanSubmit] = useState(false);
 
-  useEffect(() => {
-    console.log(props);
-  }, [props]);
-
   const checkInputValidation = (errorState, inputName, inputValue) => {
     switch (inputName) {
       case "email":
@@ -111,23 +107,16 @@ const Login = (props) => {
     setValidate(isValidatedCheck);
     setValues(inputForm);
 
-    if (
-      inputForm["email"].error.noError === false ||
-      inputForm["password"].error.noError === false
-    ) {
-      setCanSubmit(true);
-      return;
+    let errorArray = [];
+
+    for (let key in validate) {
+      errorArray.push(validate[key].noError);
     }
 
-    if (
-      inputForm["email"].error.noError === true &&
-      inputForm["password"].error.noError === true
-    ) {
+    if (errorArray.includes(true)) {
       setCanSubmit(false);
-      return;
     } else {
-      setValues(inputForm);
-      return;
+      setCanSubmit(true);
     }
   };
 
@@ -151,6 +140,7 @@ const Login = (props) => {
       inputForm["password"].value = "";
 
       setValues(inputForm);
+      props.history.push("/option");
     } catch (e) {
       failureToast(e);
     }
@@ -164,15 +154,8 @@ const Login = (props) => {
         <h3>Login</h3>
       </div>
       <div>
-        {/* <TextField
-          label="Email"
-          name="email"
-          value={values.email.value}
-          onChange={handleChange}
-        /> */}
         <TextField
           error={values.email.error.noError ? true : false}
-          id="standard-error-helper-text"
           label="Email"
           name="email"
           defaultValue={values.email.value}
@@ -182,10 +165,10 @@ const Login = (props) => {
       </div>
       <div>
         <TextField
-          error={values.email.error.noError ? true : false}
-          id="standard-error-helper-text"
+          error={values.password.error.noError ? true : false}
           label="Password"
           name="password"
+          type="password"
           defaultValue={values.password.value}
           helperText={values.password.error.message}
           onChange={handleChange}
@@ -198,6 +181,7 @@ const Login = (props) => {
         variant="contained"
         color="primary"
         size="small"
+        disabled={!canSubmit}
         type="submit">
         Submit
       </Button>
