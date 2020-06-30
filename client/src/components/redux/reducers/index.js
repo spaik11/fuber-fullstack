@@ -1,8 +1,9 @@
-import { combineReducers } from "redux";
-import directionsReducers from "./directionsReducer";
-import authUserReducer from "./authUserReducer";
+import { combineReducers } from 'redux'
+import directionsReducer from './directionsReducer'
+import sidebarReducer from './sidebarReducer'
+
 
 export default combineReducers({
-  directions: directionsReducers,
-  authUser: authUserReducer,
-});
+   directions: directionsReducer,
+   sidebar: sidebarReducer
+})
