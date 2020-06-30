@@ -52,32 +52,29 @@ export class Map extends Component {
     }
   };
 
-  componentDidMount() {
-    console.log(this.state.activeMarker);
-    navigator.geolocation.getCurrentPosition((success, error) => {
-      if (error) {
-        console.log(error);
+   componentDidMount(){
+      if(!this.props.data.userLoc.lat){
+         navigator.geolocation.getCurrentPosition((success, error)=>{
+            if(error){
+               console.log(error)
+            }
+            this.props.getUserLocation({lat: success.coords.latitude, lng: success.coords.longitude})
+         })
       }
-      this.props.getUserLocation({
-        lat: success.coords.latitude,
-        lng: success.coords.longitude,
-      });
-    });
-  }
+   }
 
    render(){
-      console.log(this.props)
+      // console.log(this.props)
       const { data } = this.props
       const { activeMarker, scriptReady } = this.state
    
       return (
          //GoogleMap renders only after script is loaded otherwise window.google in undefined
          <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY} onLoad={this.scriptLoaded}>
-            <h1>Fuber</h1>
             {scriptReady && 
             <GoogleMap
                mapContainerStyle={containerStyle}
-               center={data.userLoc.lat
+               center={!!data.userLoc.lat
                         ? { lat: data.userLoc.lat, lng: data.userLoc.lng }
                         : { lat: data.defaultLoc.lat, lng: data.defaultLoc.lng }
                      }
@@ -119,8 +116,8 @@ export class Map extends Component {
                         lng: data.userLoc.lng+0.04
                      }}
                      icon={{
-                        url: 'https://svg-clipart.com/clipart/icon/xRbOGuq-person-symbol-white-clipart.png',
-                        scaledSize: new window.google.maps.Size(70, 70)
+                        url: 'https://i.dlpng.com/static/png/6936090_preview.png',
+                        scaledSize: new window.google.maps.Size(40, 40)
                      }} 
                      animation={window.google.maps.Animation.DROP}
                      onClick={() => {
@@ -144,96 +141,28 @@ export class Map extends Component {
                   </Marker>
                </>
             }
-            zoom={12}
-            options={options}>
-            {data.userLoc /*!data.friendLoc &&*/ && (
-              <>
-                <Marker
-                  position={{
-                    lat: data.userLoc.lat,
-                    lng: data.userLoc.lng,
-                  }}
-                  icon={{
-                    url:
-                      "https://svg-clipart.com/clipart/icon/xRbOGuq-person-symbol-white-clipart.png",
-                    scaledSize: new window.google.maps.Size(70, 70),
-                  }}
-                  animation={window.google.maps.Animation.DROP}
-                  onClick={() => {
-                    this.setActiveMarker({
-                      lat: data.userLoc.lat,
-                      lng: data.userLoc.lng,
-                    });
-                  }}>
-                  {activeMarker && (
-                    <InfoWindow
-                      onCloseClick={() => {
-                        this.setActiveMarker(null);
-                      }}>
-                      <h4>You</h4>
-                    </InfoWindow>
-                  )}
-                </Marker>
-                <Marker
-                  name={"self"}
-                  position={{
-                    lat: data.userLoc.lat + 0.04,
-                    lng: data.userLoc.lng + 0.04,
-                  }}
-                  icon={{
-                    url:
-                      "https://svg-clipart.com/clipart/icon/xRbOGuq-person-symbol-white-clipart.png",
-                    scaledSize: new window.google.maps.Size(70, 70),
-                  }}
-                  animation={window.google.maps.Animation.DROP}
-                  onClick={() => {
-                    this.setActiveMarker({
-                      lat: data.userLoc.lat + 0.04,
-                      lng: data.userLoc.lng + 0.04,
-                    });
-                  }}>
-                  {activeMarker && (
-                    <InfoWindow
-                      onCloseClick={() => {
-                        this.setActiveMarker(null);
-                      }}>
-                      <>
-                        <h4>Friend</h4>
-                        <button
-                          onClick={() =>
-                            this.props.getActiveMarker(this.state.activeMarker)
-                          }>
-                          Accepts request
-                        </button>
-                      </>
-                    </InfoWindow>
-                  )}
-                </Marker>
-              </>
-            )}
-            <DirectionsService
-              options={{
-                destination: {
-                  lat: data.friendLoc.lat,
-                  lng: data.friendLoc.lng,
-                },
-                origin: { lat: data.userLoc.lat, lng: data.userLoc.lng },
-                travelMode: "DRIVING", // mode can be changed here
-              }}
-              callback={this.directionsCallback}
-            />
-            {this.props.data.directions.geocoded_waypoints !== null && (
-              <DirectionsRenderer
-                options={{
-                  directions: this.props.data.directions,
-                }}
-              />
-            )}
-          </GoogleMap>
-        )}
-      </LoadScriptNext>
-    );
-  }
+            {this.props.data.friendLoc.lat &&
+               <DirectionsService
+                     options={{
+                        destination: {lat: data.friendLoc.lat, lng: data.friendLoc.lng},
+                        origin: {lat: data.userLoc.lat, lng: data.userLoc.lng},
+                        travelMode: "DRIVING", // mode can be changed here
+                     }}
+                     callback={this.directionsCallback}
+               />
+            }
+               {this.props.data.directions.geocoded_waypoints !== null && 
+                  <DirectionsRenderer
+                     options={{
+                        directions: this.props.data.directions
+                     }}
+                  />
+               }
+            </GoogleMap>
+            }
+         </LoadScriptNext>
+      )
+   }
 }
 
 const mapStateToProps = (state) => ({
