@@ -110,7 +110,6 @@ export class Map extends Component {
                      </InfoWindow>}
                   </Marker>
                   <Marker
-                     name={'self'}
                      position={{ 
                         lat: data.userLoc.lat+0.04, 
                         lng: data.userLoc.lng+0.04
