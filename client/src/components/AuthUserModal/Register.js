@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button } from "@material-ui/core";
 import validator from "validator";
@@ -135,25 +135,16 @@ const Register = (props) => {
     setValidate(isValidatedCheck);
     setValues(inputForm);
 
-    if (
-      inputForm["email"].error.noError === false ||
-      inputForm["password"].error.noError === false ||
-      inputForm["username"].error.noError === false
-    ) {
-      setCanSubmit(true);
-      return;
+    let errorArray = [];
+
+    for (let key in validate) {
+      errorArray.push(validate[key].noError);
     }
 
-    if (
-      inputForm["email"].error.noError === true &&
-      inputForm["password"].error.noError === true &&
-      inputForm["username"].error.noError === true
-    ) {
+    if (errorArray.includes(true)) {
       setCanSubmit(false);
-      return;
     } else {
-      setValues(inputForm);
-      return;
+      setCanSubmit(true);
     }
   };
 
@@ -179,6 +170,8 @@ const Register = (props) => {
       inputForm["password"].value = "";
 
       setValues(inputForm);
+
+      props.history.push("/option");
     } catch (e) {
       failureToast(e);
     }
@@ -194,7 +187,6 @@ const Register = (props) => {
       <div>
         <TextField
           error={values.username.error.noError ? true : false}
-          id="standard-error-helper-text"
           label="Username"
           name="username"
           defaultValue={values.username.value}
@@ -205,7 +197,6 @@ const Register = (props) => {
       <div>
         <TextField
           error={values.email.error.noError ? true : false}
-          id="standard-error-helper-text"
           label="Email"
           name="email"
           defaultValue={values.email.value}
@@ -215,8 +206,7 @@ const Register = (props) => {
       </div>
       <div>
         <TextField
-          error={values.email.error.noError ? true : false}
-          id="standard-error-helper-text"
+          error={values.password.error.noError ? true : false}
           label="Password"
           name="password"
           type="password"
@@ -232,6 +222,7 @@ const Register = (props) => {
         variant="contained"
         color="primary"
         size="small"
+        disabled={!canSubmit}
         type="submit">
         Submit
       </Button>
