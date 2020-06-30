@@ -6,9 +6,7 @@ import {
   } from "../constants/directionConstants";
 
 const initialState = {
-  directions: {
-    geocoded_waypoints: null,
-  },
+  directions: null,
   estimate: {
     distance: {
       text: null,
@@ -39,6 +37,11 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case DIRECTIONS:
+      if(state.directions){
+        const place1 = (state.directions.geocoded_waypoints[0].place_id === action.payload.geocoded_waypoints[0].place_id)
+        const place2 = (state.directions.geocoded_waypoints[1].place_id === action.payload.geocoded_waypoints[1].place_id)
+        if(place1 === place2)return state
+      }
       return {
         ...state,
         estimate: action.payload.routes[0].legs[0],
@@ -59,9 +62,6 @@ export default function (state = initialState, action) {
       const friendLocCopy = state.friendLoc;
       friendLocCopy.lat = null;
       friendLocCopy.lng = null;
-      const directionsCopy = {
-        geocoded_waypoints: [],
-      };
       const estimateCopy = {
         distance: {
           text: null,
@@ -76,7 +76,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         friendLoc: friendLocCopy,
-        directions: directionsCopy,
+        directions: null,
         estimate: estimateCopy,
         requestAccepted: false,
       };

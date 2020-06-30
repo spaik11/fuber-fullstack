@@ -16,7 +16,7 @@ export default function App() {
         <Navbar />
         <Map />
       </div>
-      <AuthUserModal />
+      {/* <AuthUserModal /> */}
     </Provider>
   );
 }

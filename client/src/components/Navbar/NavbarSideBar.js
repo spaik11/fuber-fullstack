@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import parse from 'html-react-parser'
 import { connect } from 'react-redux'
+import { cancelHelp } from '../redux/actions/directionsActions'
 
 const sideBar = {
    position: 'absolute',
@@ -18,7 +19,6 @@ const sideBar = {
 
 export class NavbarSideBar extends Component {
    render() {
-      // console.log(this.props)
       const { sidebar, estimate, friendLoc } =  this.props
       return (
          <div style={{visibility: sidebar ? 'initial' : 'hidden'}}>
@@ -38,7 +38,7 @@ export class NavbarSideBar extends Component {
                            </div>
                         )
                      })}
-                     <button>Cancel</button>
+                     <button onClick={()=> this.props.cancelHelp()}>Cancel</button>
                   </div>
                )}
                {!friendLoc && 
@@ -67,4 +67,4 @@ const mapStateToProps = (state) => ({
 })
 
 
-export default connect(mapStateToProps, {})(NavbarSideBar)
+export default connect(mapStateToProps, {cancelHelp})(NavbarSideBar)
