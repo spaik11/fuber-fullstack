@@ -193,41 +193,37 @@ const Register = (props) => {
       </div>
       <div>
         <TextField
+          error={values.username.error.noError ? true : false}
+          id="standard-error-helper-text"
           label="Username"
           name="username"
-          value={values.username.value}
+          defaultValue={values.username.value}
+          helperText={values.username.error.message}
           onChange={handleChange}
         />
-        {values.username.error.noError && (
-          <p className={classes.invalidMessage}>
-            {values.username.error.message}
-          </p>
-        )}
       </div>
       <div>
         <TextField
+          error={values.email.error.noError ? true : false}
+          id="standard-error-helper-text"
           label="Email"
           name="email"
-          value={values.email.value}
+          defaultValue={values.email.value}
+          helperText={values.email.error.message}
           onChange={handleChange}
         />
-        {values.email.error.noError && (
-          <p className={classes.invalidMessage}>{values.email.error.message}</p>
-        )}
       </div>
       <div>
         <TextField
+          error={values.email.error.noError ? true : false}
+          id="standard-error-helper-text"
           label="Password"
           name="password"
           type="password"
-          value={values.password.value}
+          defaultValue={values.password.value}
+          helperText={values.password.error.message}
           onChange={handleChange}
         />
-        {values.password.error.noError && (
-          <p className={classes.invalidMessage}>
-            {values.password.error.message}
-          </p>
-        )}
       </div>
       <br />
       <Button
