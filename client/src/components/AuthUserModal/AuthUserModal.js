@@ -1,6 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
-import { loginUser, createUser } from "../redux/actions/authUserActions";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -25,17 +23,16 @@ const useStyles = makeStyles((theme) => ({
   },
   body: {
     display: "flex",
-    alignItems: "center",
     justifyContent: "space-between",
   },
   line: {
     borderLeft: "1px solid black",
-    height: "200px",
+    height: "250px",
     justifyContent: "center",
   },
 }));
 
-function AuthUserModal(props) {
+function AuthUserModal() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
@@ -49,9 +46,6 @@ function AuthUserModal(props) {
 
   return (
     <div>
-      <button type="button" onClick={handleOpen}>
-        USER REGISTER/LOGIN
-      </button>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -79,12 +73,4 @@ function AuthUserModal(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    authUser: state.authUser,
-  };
-};
-
-export default connect(mapStateToProps, { loginUser, createUser })(
-  AuthUserModal
-);
+export default AuthUserModal;

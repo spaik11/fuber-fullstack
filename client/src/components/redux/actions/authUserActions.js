@@ -6,28 +6,43 @@ import { LOGIN_USER, LOGOUT_USER } from "../constants/authUserConstants";
 
 export const createUser = (userInfo) => async (dispatch) => {
   try {
-    let { data } = await Axios.post("/api/users/create-user", userInfo, {
+    let success = await Axios.post("/api/users/create-user", userInfo, {
       withCredentials: true,
     });
 
-    dispatch({ type: LOGIN_USER, payload: data });
+    dispatch({
+      type: LOGIN_USER,
+      payload: success.data,
+    });
 
     return Promise.resolve();
   } catch (e) {
-    throw Error(e.response.data.message);
+    if (e.message) {
+      return Promise.reject(e.message);
+    } else {
+      return Promise.reject(e.response.data.message);
+    }
   }
 };
 
 export const loginUser = (userInfo) => async (dispatch) => {
   try {
-    let { data } = await Axios.post("/api/users/login", userInfo, {
+    let success = await Axios.post("/api/users/login", userInfo, {
       withCredentials: true,
     });
 
-    dispatch({ type: LOGIN_USER, payload: data });
+    dispatch({
+      type: LOGIN_USER,
+      payload: success.data,
+    });
+
     return Promise.resolve();
   } catch (e) {
-    throw Error(e.response.data.message);
+    if (e.message) {
+      return Promise.reject(e.message);
+    } else {
+      return Promise.reject(e.response.data.message);
+    }
   }
 };
 
@@ -62,7 +77,7 @@ export const logout = () => async (dispatch) => {
       type: LOGOUT_USER,
     });
   } catch (e) {
-    throw Error(e.response.data.message);
+    return Promise.reject(e);
   }
 };
 

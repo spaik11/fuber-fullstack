@@ -4,6 +4,7 @@ import { TextField, Button } from "@material-ui/core";
 import validator from "validator";
 import { connect } from "react-redux";
 import { loginUser } from "../redux/actions/authUserActions";
+import { successToast, failureToast } from "../Toastify/Toast";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 const Login = (props) => {
   const [values, setValues] = useState({
     email: {
+      name: "email",
       value: "",
       error: {
         message: "",
@@ -32,6 +34,7 @@ const Login = (props) => {
       },
     },
     password: {
+      name: "password",
       value: "",
       error: {
         message: "",
@@ -41,11 +44,11 @@ const Login = (props) => {
   });
   const [validate, setValidate] = useState({
     emailError: {
-      noError: null,
+      noError: true,
       message: "",
     },
     passwordError: {
-      noError: null,
+      noError: true,
       message: "",
     },
   });
@@ -58,15 +61,14 @@ const Login = (props) => {
   const checkInputValidation = (errorState, inputName, inputValue) => {
     switch (inputName) {
       case "email":
-        let validatedEmail;
-        validatedEmail = validator.isEmail(inputValue);
+        let isEmail = validator.isEmail(inputValue);
 
-        if (!validatedEmail) {
-          errorState.emailError.noError = validatedEmail;
+        if (!isEmail) {
+          errorState.emailError.noError = true;
           errorState.emailError.message = "It must be an email";
           return errorState;
         } else {
-          errorState.emailError.noError = validatedEmail;
+          errorState.emailError.noError = false;
           errorState.emailError.message = "";
           return errorState;
         }
@@ -76,11 +78,11 @@ const Login = (props) => {
         validatedPassword = !validator.isEmpty(inputValue);
 
         if (!validatedPassword) {
-          errorState.passwordError.noError = validatedPassword;
+          errorState.passwordError.noError = true;
           errorState.passwordError.message = "Password cannot be empty";
           return errorState;
         } else {
-          errorState.passwordError.noError = validatedPassword;
+          errorState.passwordError.noError = false;
           errorState.passwordError.message = "";
           return errorState;
         }
@@ -97,37 +99,36 @@ const Login = (props) => {
 
     inputForm[event.target.name].value = event.target.value;
 
+    let isValidatedCheck = checkInputValidation(
+      validate,
+      event.target.name,
+      event.target.value
+    );
+
+    inputForm["email"].error = isValidatedCheck.emailError;
+    inputForm["password"].error = isValidatedCheck.passwordError;
+
+    setValidate(isValidatedCheck);
     setValues(inputForm);
 
-    // let isValidatedCheck = checkInputValidation(
-    //   validate,
-    //   event.target.name,
-    //   event.target.value
-    // );
+    if (
+      inputForm["email"].error.noError === false ||
+      inputForm["password"].error.noError === false
+    ) {
+      setCanSubmit(true);
+      return;
+    }
 
-    // inputForm["email"].error = isValidatedCheck.emailError;
-    // inputForm["password"].error = isValidatedCheck.passwordError;
-
-    // setValidate(isValidatedCheck);
-
-    // if (
-    //   inputForm["email"].error.noError === false ||
-    //   inputForm["password"].error.noError === false
-    // ) {
-    //   setCanSubmit(true);
-    //   return;
-    // }
-
-    // if (
-    //   inputForm["email"].error.noError === true &&
-    //   inputForm["password"].error.noError === true
-    // ) {
-    //   setCanSubmit(false);
-    //   return;
-    // } else {
-    //   setValues(inputForm);
-    //   return;
-    // }
+    if (
+      inputForm["email"].error.noError === true &&
+      inputForm["password"].error.noError === true
+    ) {
+      setCanSubmit(false);
+      return;
+    } else {
+      setValues(inputForm);
+      return;
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -144,10 +145,14 @@ const Login = (props) => {
         password: password.value,
       });
 
+      successToast("Welcome Back!");
+
       inputForm["email"].value = "";
       inputForm["password"].value = "";
+
+      setValues(inputForm);
     } catch (e) {
-      console.log(e);
+      failureToast(e);
     }
   };
 
@@ -169,7 +174,6 @@ const Login = (props) => {
           <p className={classes.invalidMessage}>{values.email.error.message}</p>
         )}
       </div>
-      <br />
       <div>
         <TextField
           label="Password"

@@ -4,6 +4,7 @@ import { TextField, Button } from "@material-ui/core";
 import validator from "validator";
 import { connect } from "react-redux";
 import { createUser } from "../redux/actions/authUserActions";
+import { successToast, failureToast } from "../Toastify/Toast";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +25,16 @@ const useStyles = makeStyles((theme) => ({
 
 const Register = (props) => {
   const [values, setValues] = useState({
+    username: {
+      name: "username",
+      value: "",
+      error: {
+        message: "",
+        noError: null,
+      },
+    },
     email: {
+      name: "email",
       value: "",
       error: {
         message: "",
@@ -32,6 +42,7 @@ const Register = (props) => {
       },
     },
     password: {
+      name: "password",
       value: "",
       error: {
         message: "",
@@ -40,20 +51,20 @@ const Register = (props) => {
     },
   });
   const [validate, setValidate] = useState({
+    usernameError: {
+      noError: true,
+      message: "",
+    },
     emailError: {
-      noError: null,
+      noError: true,
       message: "",
     },
     passwordError: {
-      noError: null,
+      noError: true,
       message: "",
     },
   });
   const [canSubmit, setCanSubmit] = useState(false);
-
-  useEffect(() => {
-    console.log(props);
-  }, [props]);
 
   const checkInputValidation = (errorState, inputName, inputValue) => {
     switch (inputName) {
@@ -62,11 +73,11 @@ const Register = (props) => {
         validatedEmail = validator.isEmail(inputValue);
 
         if (!validatedEmail) {
-          errorState.emailError.noError = validatedEmail;
+          errorState.emailError.noError = true;
           errorState.emailError.message = "It must be an email";
           return errorState;
         } else {
-          errorState.emailError.noError = validatedEmail;
+          errorState.emailError.noError = false;
           errorState.emailError.message = "";
           return errorState;
         }
@@ -76,12 +87,26 @@ const Register = (props) => {
         validatedPassword = !validator.isEmpty(inputValue);
 
         if (!validatedPassword) {
-          errorState.passwordError.noError = validatedPassword;
+          errorState.passwordError.noError = true;
           errorState.passwordError.message = "Password cannot be empty";
           return errorState;
         } else {
-          errorState.passwordError.noError = validatedPassword;
+          errorState.passwordError.noError = false;
           errorState.passwordError.message = "";
+          return errorState;
+        }
+
+      case "username":
+        let validatedUsername;
+        validatedUsername = !validator.isEmpty(inputValue);
+
+        if (!validatedUsername) {
+          errorState.usernameError.noError = true;
+          errorState.usernameError.message = "Username cannot be empty";
+          return errorState;
+        } else {
+          errorState.usernameError.noError = false;
+          errorState.usernameError.message = "";
           return errorState;
         }
 
@@ -97,42 +122,44 @@ const Register = (props) => {
 
     inputForm[event.target.name].value = event.target.value;
 
+    let isValidatedCheck = checkInputValidation(
+      validate,
+      event.target.name,
+      event.target.value
+    );
+
+    inputForm["username"].error = isValidatedCheck.usernameError;
+    inputForm["email"].error = isValidatedCheck.emailError;
+    inputForm["password"].error = isValidatedCheck.passwordError;
+
+    setValidate(isValidatedCheck);
     setValues(inputForm);
 
-    // let isValidatedCheck = checkInputValidation(
-    //   validate,
-    //   event.target.name,
-    //   event.target.value
-    // );
+    if (
+      inputForm["email"].error.noError === false ||
+      inputForm["password"].error.noError === false ||
+      inputForm["username"].error.noError === false
+    ) {
+      setCanSubmit(true);
+      return;
+    }
 
-    // inputForm["email"].error = isValidatedCheck.emailError;
-    // inputForm["password"].error = isValidatedCheck.passwordError;
-
-    // setValidate(isValidatedCheck);
-
-    // if (
-    //   inputForm["email"].error.noError === false ||
-    //   inputForm["password"].error.noError === false
-    // ) {
-    //   setCanSubmit(true);
-    //   return;
-    // }
-
-    // if (
-    //   inputForm["email"].error.noError === true &&
-    //   inputForm["password"].error.noError === true
-    // ) {
-    //   setCanSubmit(false);
-    //   return;
-    // } else {
-    //   setValues(inputForm);
-    //   return;
-    // }
+    if (
+      inputForm["email"].error.noError === true &&
+      inputForm["password"].error.noError === true &&
+      inputForm["username"].error.noError === true
+    ) {
+      setCanSubmit(false);
+      return;
+    } else {
+      setValues(inputForm);
+      return;
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const { email, password } = values;
+    const { username, email, password } = values;
 
     try {
       let inputForm = {
@@ -140,14 +167,20 @@ const Register = (props) => {
       };
 
       await props.createUser({
+        username: username.value,
         email: email.value,
         password: password.value,
       });
 
+      successToast("Welcome to Fuber!");
+
+      inputForm["username"].value = "";
       inputForm["email"].value = "";
       inputForm["password"].value = "";
+
+      setValues(inputForm);
     } catch (e) {
-      console.log(e);
+      failureToast(e);
     }
   };
 
@@ -160,6 +193,19 @@ const Register = (props) => {
       </div>
       <div>
         <TextField
+          label="Username"
+          name="username"
+          value={values.username.value}
+          onChange={handleChange}
+        />
+        {values.username.error.noError && (
+          <p className={classes.invalidMessage}>
+            {values.username.error.message}
+          </p>
+        )}
+      </div>
+      <div>
+        <TextField
           label="Email"
           name="email"
           value={values.email.value}
@@ -169,7 +215,6 @@ const Register = (props) => {
           <p className={classes.invalidMessage}>{values.email.error.message}</p>
         )}
       </div>
-      <br />
       <div>
         <TextField
           label="Password"
