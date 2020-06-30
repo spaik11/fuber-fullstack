@@ -1,12 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
+import { Button } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import Login from "./Login";
-import Register from "./Register";
-import { isAuthenticated } from "../redux/actions/authUserActions";
+import { requestHelp } from "../redux/actions/authUserActions";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -26,26 +25,22 @@ const useStyles = makeStyles((theme) => ({
   },
   body: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
   },
   line: {
     borderLeft: "1px solid black",
     height: "250px",
     justifyContent: "center",
   },
+  margin: {
+    margin: theme.spacing(1),
+    width: "25ch",
+  },
 }));
 
-export default function AuthUserModal(props) {
+function OptionModal(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-
-  useEffect(() => {
-    let success = isAuthenticated();
-
-    if (success) {
-      props.history.push("/option");
-    }
-  }, [props.history]);
 
   return (
     <div>
@@ -62,11 +57,25 @@ export default function AuthUserModal(props) {
         }}>
         <Fade in={open}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title">Welcome to Fuber!</h2>
+            <h2 id="transition-modal-title">{`Welcome Back`}</h2>
             <div className={classes.body}>
-              <Login history={props.history} />
+              <Button
+                className={classes.margin}
+                onClick={() => props.requestHelp(false)}
+                variant="contained"
+                color="primary"
+                type="submit">
+                HELP SOMEBODY
+              </Button>
               <div className={classes.line}></div>
-              <Register history={props.history} />
+              <Button
+                className={classes.margin}
+                onClick={() => props.requestHelp(true)}
+                variant="contained"
+                color="primary"
+                type="submit">
+                REQUEST HELP
+              </Button>
             </div>
           </div>
         </Fade>
@@ -74,3 +83,11 @@ export default function AuthUserModal(props) {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  authUser: state.authUser,
+});
+
+export default connect(mapStateToProps, {
+  requestHelp,
+})(OptionModal);

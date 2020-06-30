@@ -3,6 +3,11 @@ const moment = require("moment");
 const now = moment();
 
 const UserSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    trim: true,
+    required: "Email is required",
+  },
   email: {
     type: String,
     trim: true,

@@ -35,10 +35,7 @@ module.exports = {
       createdUser = createdUser.toObject();
       delete createdUser.password;
 
-      res.json({
-        message: "User Created",
-        user: createdUser,
-      });
+      res.json(createdUser);
     } catch (e) {
       res.status(500).json({
         message: dbErrorHelper(e),
@@ -76,10 +73,7 @@ module.exports = {
           foundUser = foundUser.toObject();
           delete foundUser.password;
 
-          res.json({
-            message: "Success",
-            user: foundUser,
-          });
+          res.json(foundUser);
         }
       }
     } catch (e) {
