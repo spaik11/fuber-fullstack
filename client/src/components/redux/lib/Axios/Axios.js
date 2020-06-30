@@ -51,9 +51,11 @@ Axios.interceptors.response.use(
           return success;
         }
       } catch (e) {
+        console.log(e)
         return Promise.reject(error);
       }
     }
+  return Promise.reject(error.response.data)
   }
 );
 

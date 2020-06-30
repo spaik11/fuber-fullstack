@@ -30,7 +30,6 @@ export const loginUser = (userInfo) => async (dispatch) => {
     let success = await Axios.post("/api/users/login", userInfo, {
       withCredentials: true,
     });
-
     dispatch({
       type: LOGIN_USER,
       payload: success.data,
@@ -38,6 +37,7 @@ export const loginUser = (userInfo) => async (dispatch) => {
 
     return Promise.resolve();
   } catch (e) {
+    console.log(e)
     if (e.message) {
       return Promise.reject(e.message);
     } else {
