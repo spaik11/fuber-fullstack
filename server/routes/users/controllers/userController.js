@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const User = require("../model/User");
-const getErrorMessage = require("../authHelpers/dbErrorHelper");
+const dbErrorHelper = require("../authHelpers/dbErrorHelper");
 const {
   passwordValidator,
   jwtTokenIssue,
@@ -9,10 +9,11 @@ require("dotenv").config();
 
 module.exports = {
   createUser: async (req, res) => {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
 
     try {
       let createdUser = new User({
+        username,
         email,
         password,
       });
@@ -31,12 +32,16 @@ module.exports = {
         secure: process.env.NODE_ENV === "production" ? true : false,
       });
 
+      createdUser = createdUser.toObject();
+      delete createdUser.password;
+
       res.json({
-        message: "User created",
+        message: "User Created",
+        user: createdUser,
       });
-    } catch (error) {
+    } catch (e) {
       res.status(500).json({
-        message: getErrorMessage(error),
+        message: dbErrorHelper(e),
       });
     }
   },
@@ -71,12 +76,15 @@ module.exports = {
           foundUser = foundUser.toObject();
           delete foundUser.password;
 
-          res.json({ user: foundUser });
+          res.json({
+            message: "Success",
+            user: foundUser,
+          });
         }
       }
-    } catch (error) {
+    } catch (e) {
       res.status(500).json({
-        message: getErrorMessage(error),
+        message: dbErrorHelper(e),
       });
     }
   },

@@ -9,9 +9,11 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
+const helmet = require("helmet");
+const xss = require("xss-clean");
 const mongoose = require("mongoose");
 const indexRouter = require("./routes/index")(io);
-const usersRouter = require("./routes/users");
+const usersRouter = require("./routes/users/users");
 require("dotenv").config();
 
 mongoose
@@ -28,8 +30,19 @@ mongoose
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-app.use(cors({ origin: ["http://localhost:3000"] }));
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  })
+);
+// Set security HTTP headers
+app.use(helmet());
+
+app.use(xss());
+
 app.use(compression());
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -37,7 +50,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/api/users", usersRouter);
 
 io.on("connection", (socket) => {
   io.clients((error, clients) => {

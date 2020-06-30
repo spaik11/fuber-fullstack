@@ -1,35 +1,44 @@
 const getUniqueErrorMessage = (err) => {
-  try {
-    let errorMessage = err.message;
+  let output;
 
-    errorMessage = `User, ${errorMessage.slice(
-      errorMessage.indexOf("{") + 13,
-      errorMessage.indexOf("}") - 2
-    )} already exists`;
-    return errorMessage;
-  } catch (error) {}
+  try {
+    let fieldName = err.message.substring(
+      err.message.lastIndexOf(".$") + 2,
+      err.message.lastIndexOf("_1")
+    );
+
+    let whereToSlice = fieldName.lastIndexOf(":") + 2;
+
+    output = fieldName.slice(whereToSlice) + " already exists";
+  } catch (ex) {
+    output = "Unique field already exists";
+  }
+
+  return output;
 };
 
 const getErrorMessage = (err) => {
   let message = "";
+
   if (err.code) {
     switch (err.code) {
       case 11000:
+        message = getUniqueErrorMessage(err);
+        break;
       case 11001:
         message = getUniqueErrorMessage(err);
         break;
       default:
-        message = "something went wrong";
+        message = "Something went wrong";
     }
   } else if (err.message) {
-    return err.message;
+    message = err.message;
   } else {
     for (let errName in err.errors) {
-      if (err.errors[errName].message) {
-        message = err.errors[errName].message;
-      }
+      if (err.errors[errName].message) message = err.errors[errName].message;
     }
   }
+  console.log("ERR MSG ", message);
   return message;
 };
 
