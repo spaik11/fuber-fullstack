@@ -1,4 +1,4 @@
-import { DIRECTIONS, USER_LOCATION, ACTIVE_MARKER, CANCEL_HELP } from "../constants/constants";
+import { DIRECTIONS, USER_LOCATION, ACTIVE_MARKER, CANCEL_HELP } from "../constants/directionsConstants";
 
 export const getDirections = directions => dispatch => {
    dispatch({

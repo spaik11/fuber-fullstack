@@ -1,4 +1,4 @@
-import { DIRECTIONS, USER_LOCATION, ACTIVE_MARKER, CANCEL_HELP } from "../constants/constants";
+import { DIRECTIONS, USER_LOCATION, ACTIVE_MARKER, CANCEL_HELP } from "../constants/directionsConstants";
 
 const initialState = {
   directions: {
@@ -27,7 +27,8 @@ const initialState = {
     lat: 40.7128,
     lng: -74.0060
   },
-  requestAccepted: false
+  requestAccepted: false,
+  sidebar: false
 };
 
 export default function (state = initialState, action) {

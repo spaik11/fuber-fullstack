@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux'
-import directionsReducers from './directionsReducer'
+import directionsReducer from './directionsReducer'
+import sidebarReducer from './sidebarReducer'
 
 
 export default combineReducers({
-   directions: directionsReducers,
+   directions: directionsReducer,
+   sidebar: sidebarReducer
 })
