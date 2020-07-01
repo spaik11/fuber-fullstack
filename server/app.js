@@ -59,8 +59,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("position", (position) => {
-    socket.broadcast.emit("otherPositions", position);
     console.log("position", position);
+    socket.broadcast.emit("otherPositions", position);
   });
 });
 
