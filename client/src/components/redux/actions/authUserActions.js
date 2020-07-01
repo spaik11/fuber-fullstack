@@ -6,6 +6,7 @@ import {
   LOGIN_USER,
   LOGOUT_USER,
   REQUEST_HELP,
+  ADD_FRIEND,
 } from "../constants/authUserConstants";
 
 export const createUser = (userInfo) => async (dispatch) => {
@@ -101,5 +102,12 @@ export const requestHelp = (mode) => (dispatch) => {
   dispatch({
     type: REQUEST_HELP,
     payload: mode,
+  });
+};
+
+export const loadFriends = (friends) => (dispatch) => {
+  dispatch({
+    type: ADD_FRIEND,
+    payload: friends,
   });
 };

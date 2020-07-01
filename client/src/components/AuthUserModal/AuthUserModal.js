@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -37,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AuthUserModal(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
 
   useEffect(() => {
     let success = isAuthenticated();
@@ -53,14 +51,14 @@ export default function AuthUserModal(props) {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={open}
+        open
         closeAfterTransition
         disableBackdropClick
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}>
-        <Fade in={open}>
+        <Fade in>
           <div className={classes.paper}>
             <h2 id="transition-modal-title">Welcome to Fuber!</h2>
             <div className={classes.body}>

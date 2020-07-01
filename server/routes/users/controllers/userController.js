@@ -27,7 +27,7 @@ module.exports = {
       let { jwtToken } = jwtTokenIssue(createdUser);
 
       res.cookie("jwt-cookie-expense", jwtToken, {
-        expires: new Date(Date.now() + 36000 * 60),
+        expires: new Date(Date.now() + 24 * 3600),
         httpOnly: false,
         secure: process.env.NODE_ENV === "production" ? true : false,
       });
@@ -59,7 +59,7 @@ module.exports = {
           let { jwtToken, jwtRefreshToken } = jwtTokenIssue(foundUser);
 
           res.cookie("jwt-cookie-expense", jwtToken, {
-            expires: new Date(Date.now() + 36000 * 60),
+            expires: new Date(Date.now() + 36000 * 60 * 24),
             httpOnly: false,
             secure: process.env.NODE_ENV === "production" ? true : false,
           });
