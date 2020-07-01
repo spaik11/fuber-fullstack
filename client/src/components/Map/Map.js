@@ -59,8 +59,7 @@ export class Map extends Component {
    }
 
    render(){
-      // console.log(this.props)
-      const { data } = this.props
+      const { data, requestHelp } = this.props
       const { scriptReady } = this.state
       return (
          //GoogleMap renders only after script is loaded otherwise window.google in undefined
@@ -75,7 +74,7 @@ export class Map extends Component {
                zoom={12}
                options={options}
             >
-            {data.userLoc && 
+            {data.userLoc.lat && requestHelp !== null &&
                <Markers />
             }
             {data.friendLoc.lat !== null &&
@@ -104,6 +103,7 @@ export class Map extends Component {
 
 const mapStateToProps = (state) => ({
   data: state.directions,
+  requestHelp: state.authUser.requestHelp
 });
 
 export default React.memo(

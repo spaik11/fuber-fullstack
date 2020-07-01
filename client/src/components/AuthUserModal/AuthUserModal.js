@@ -13,11 +13,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    opacity: ".75",
     fontFamily: "Roboto",
+    // opacity: ".75",
   },
   paper: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: 'rgb(238, 238, 238, 0.8)',
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),

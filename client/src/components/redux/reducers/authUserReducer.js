@@ -6,16 +6,20 @@ import {
 
 const initialState = {
   isAuthenticated: false,
-  user: null,
+  user: {
+    username: null
+  },
   requestHelp: null,
+  optionsModal: true
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
     case LOGIN_USER:
       return {
+        ...state,
         isAuthenticated: true,
-        user: { user: action.payload },
+        user: {...action.payload},
       };
     case LOGOUT_USER:
       return {
@@ -23,9 +27,11 @@ export default function (state = initialState, action) {
         user: null,
       };
     case REQUEST_HELP:
+    console.log('Payload: ',action.payload)
       return {
         ...state,
         requestHelp: action.payload,
+        optionsModal: false
       };
     default:
       return state;

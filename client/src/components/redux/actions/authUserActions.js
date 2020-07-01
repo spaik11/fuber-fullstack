@@ -98,6 +98,9 @@ export const getRefreshToken = () => {
 };
 
 export const requestHelp = (mode) => (dispatch) => {
+
+  localStorage.setItem('requestHelp', mode)
+
   dispatch({
     type: REQUEST_HELP,
     payload: mode,
