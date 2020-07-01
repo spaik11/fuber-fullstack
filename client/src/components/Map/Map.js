@@ -88,7 +88,7 @@ export class Map extends Component {
       this.props.loadFriends(tempFriends);
     });
     console.log("PROPS", this.props);
-    const { data } = this.props;
+    const { data, requestHelp } = this.props;
     const { scriptReady } = this.state;
     return (
       //GoogleMap renders only after script is loaded otherwise window.google in undefined

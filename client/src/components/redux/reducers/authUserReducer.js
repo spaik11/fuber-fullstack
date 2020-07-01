@@ -11,11 +11,8 @@ const initialState = {
     username: null
   },
   requestHelp: null,
-<<<<<<< HEAD
   friends: null,
-=======
   optionsModal: true
->>>>>>> niko-branch
 };
 
 export default function (state = initialState, action) {
@@ -24,11 +21,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAuthenticated: true,
-<<<<<<< HEAD
         user: action.payload,
-=======
-        user: {...action.payload},
->>>>>>> niko-branch
       };
     case LOGOUT_USER:
       return {

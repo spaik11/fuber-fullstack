@@ -39,11 +39,7 @@ const jwtTokenIssue = (user) => {
 const checkAuthMiddleware = expressJwt({
   secret: process.env.ACCESS_TOKEN_SECRET || config["ACCESS_TOKEN_SECRET"],
   userProperty: "auth",
-<<<<<<< HEAD
-  algorithms: ["RS256"],
-=======
   algorithms: ['RS256']
->>>>>>> niko-branch
 });
 
 const checkRefreshTokenMiddleware = expressJwt({
@@ -51,11 +47,7 @@ const checkRefreshTokenMiddleware = expressJwt({
     process.env.ACCESS_REFRESH_TOKEN_SECRET ||
     config["ACCESS_REFRESH_TOKEN_SECRET"],
   userProperty: "auth",
-<<<<<<< HEAD
-  algorithms: ["RS256"],
-=======
   algorithms: ['RS256']
->>>>>>> niko-branch
 });
 
 const findUserIfUserExist = async (req, res, next) => {
