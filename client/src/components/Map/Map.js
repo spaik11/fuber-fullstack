@@ -88,7 +88,7 @@ export class Map extends Component {
       this.props.loadFriends(tempFriends);
     });
     console.log("PROPS", this.props);
-    const { data } = this.props;
+    const { data, requestHelp } = this.props;
     const { scriptReady } = this.state;
     return (
       //GoogleMap renders only after script is loaded otherwise window.google in undefined
@@ -103,30 +103,30 @@ export class Map extends Component {
                 ? { lat: data.userLoc.lat, lng: data.userLoc.lng }
                 : { lat: data.defaultLoc.lat, lng: data.defaultLoc.lng }
             }
-            zoom={12}
-            options={options}>
-            {data.userLoc && <Markers />}
-            {data.friendLoc.lat !== null && (
-              <DirectionsService
-                options={{
-                  destination: {
-                    lat: data.friendLoc.lat,
-                    lng: data.friendLoc.lng,
-                  },
-                  origin: { lat: data.userLoc.lat, lng: data.userLoc.lng },
-                  travelMode: "DRIVING", // mode can be changed here
-                }}
-                callback={this.directionsCallback}
-              />
-            )}
-            {data.directions !== null && (
-              <DirectionsRenderer
-                options={{
-                  directions: this.props.data.directions,
-                }}
-              />
-            )}
-          </GoogleMap>
+               zoom={12}
+               options={options}
+            >
+            {data.userLoc.lat && requestHelp !== null &&
+               <Markers />
+            }
+            {data.friendLoc.lat !== null &&
+               <DirectionsService
+                     options={{
+                        destination: {lat: data.friendLoc.lat, lng: data.friendLoc.lng},
+                        origin: {lat: data.userLoc.lat, lng: data.userLoc.lng},
+                        travelMode: "DRIVING", // mode can be changed here
+                     }}
+                     callback={this.directionsCallback}
+               />
+            }
+               {data.directions !== null && 
+                  <DirectionsRenderer
+                     options={{
+                        directions: this.props.data.directions
+                     }}
+                  />
+               }
+            </GoogleMap>
         )}
       </LoadScriptNext>
     );
@@ -136,6 +136,7 @@ export class Map extends Component {
 const mapStateToProps = (state) => ({
   data: state.directions,
   authUser: state.authUser,
+  requestHelp: state.authUser.requestHelp
 });
 
 export default React.memo(
