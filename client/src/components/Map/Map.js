@@ -6,6 +6,7 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import { connect } from "react-redux";
+import io from "socket.io-client";
 
 import mapStyle from "./lib/mapStyle";
 import {
@@ -13,8 +14,9 @@ import {
   getDirections,
   getActiveMarker,
 } from "../redux/actions/directionsActions";
+import { loadFriends } from "../redux/actions/authUserActions";
 
-import Markers from './Markers/Markers'
+import Markers from "./Markers/Markers";
 
 const containerStyle = {
   width: "100%",
@@ -28,86 +30,119 @@ const options = {
 };
 
 export class Map extends Component {
-   state = {
+  constructor(props) {
+    super(props);
+    this.state = {
       scriptReady: false,
-   };
+    };
+    this.socket = io.connect("http://localhost:3001");
+  }
 
-   scriptLoaded = () => {
-      this.setState({ scriptReady: true });
-   };
+  scriptLoaded = () => {
+    this.setState({ scriptReady: true });
+  };
 
-   directionsCallback = (response) => {
-      if (response !== null) {
-         if (response.status === "OK") {
-         //   console.log(response);
-         this.props.getDirections(response);
-         } else {
-         console.log("response: ", response);
-         }
+  directionsCallback = (response) => {
+    if (response !== null) {
+      if (response.status === "OK") {
+        //   console.log(response);
+        this.props.getDirections(response);
+      } else {
+        console.log("response: ", response);
       }
-   };
+    }
+  };
 
-   componentDidMount(){
-      if(!this.props.data.userLoc.lat){
-         navigator.geolocation.getCurrentPosition((success, error)=>{
-            if(error){
-               console.log(error)
-            }
-            this.props.getUserLocation({lat: success.coords.latitude, lng: success.coords.longitude})
-         })
-      }
-   }
+  componentDidMount() {
+    if (!this.props.data.userLoc.lat) {
+      navigator.geolocation.getCurrentPosition((success, error) => {
+        if (error) {
+          console.log(error);
+        }
+        if (this.props.authUser.user) {
+          const {
+            coords: { latitude: lat, longitude: lng },
+          } = success;
+          this.socket.emit("position", {
+            lat,
+            lng,
+            user: { ...this.props.authUser.user },
+            requestHelp: { ...this.props.authUser.requestHelp },
+          });
+        }
 
-   render(){
-      // console.log(this.props)
-      const { data } = this.props
-      const { scriptReady } = this.state
-      return (
-         //GoogleMap renders only after script is loaded otherwise window.google in undefined
-         <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY} onLoad={this.scriptLoaded}>
-            {scriptReady && 
-            <GoogleMap
-               mapContainerStyle={containerStyle}
-               center={!!data.userLoc.lat
-                        ? { lat: data.userLoc.lat, lng: data.userLoc.lng }
-                        : { lat: data.defaultLoc.lat, lng: data.defaultLoc.lng }
-                     }
-               zoom={12}
-               options={options}
-            >
-            {data.userLoc && 
-               <Markers />
+        this.props.getUserLocation({
+          lat: success.coords.latitude,
+          lng: success.coords.longitude,
+        });
+      });
+    }
+    // Need to check refresh page if redux holds request and friends
+  }
+
+  render() {
+    this.socket.on("otherPositions", (positionsData) => {
+      let tempFriends = { ...this.props.authUser.friends };
+      tempFriends[positionsData.user.id] = { ...positionsData };
+
+      this.props.loadFriends(tempFriends);
+    });
+    console.log("PROPS", this.props);
+    const { data } = this.props;
+    const { scriptReady } = this.state;
+    return (
+      //GoogleMap renders only after script is loaded otherwise window.google in undefined
+      <LoadScriptNext
+        googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}
+        onLoad={this.scriptLoaded}>
+        {scriptReady && (
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={
+              !!data.userLoc.lat
+                ? { lat: data.userLoc.lat, lng: data.userLoc.lng }
+                : { lat: data.defaultLoc.lat, lng: data.defaultLoc.lng }
             }
-            {data.friendLoc.lat !== null &&
-               <DirectionsService
-                     options={{
-                        destination: {lat: data.friendLoc.lat, lng: data.friendLoc.lng},
-                        origin: {lat: data.userLoc.lat, lng: data.userLoc.lng},
-                        travelMode: "DRIVING", // mode can be changed here
-                     }}
-                     callback={this.directionsCallback}
-               />
-            }
-               {data.directions !== null && 
-                  <DirectionsRenderer
-                     options={{
-                        directions: this.props.data.directions
-                     }}
-                  />
-               }
-            </GoogleMap>
-            }
-         </LoadScriptNext>
-      )
-   }
+            zoom={12}
+            options={options}>
+            {data.userLoc && <Markers />}
+            {data.friendLoc.lat !== null && (
+              <DirectionsService
+                options={{
+                  destination: {
+                    lat: data.friendLoc.lat,
+                    lng: data.friendLoc.lng,
+                  },
+                  origin: { lat: data.userLoc.lat, lng: data.userLoc.lng },
+                  travelMode: "DRIVING", // mode can be changed here
+                }}
+                callback={this.directionsCallback}
+              />
+            )}
+            {data.directions !== null && (
+              <DirectionsRenderer
+                options={{
+                  directions: this.props.data.directions,
+                }}
+              />
+            )}
+          </GoogleMap>
+        )}
+      </LoadScriptNext>
+    );
+  }
 }
 
 const mapStateToProps = (state) => ({
   data: state.directions,
+  authUser: state.authUser,
 });
 
 export default React.memo(
-  connect(mapStateToProps, { getUserLocation, getDirections, getActiveMarker })(
-    Map
-  )
+  connect(mapStateToProps, {
+    getUserLocation,
+    getDirections,
+    getActiveMarker,
+    loadFriends,
+  })(Map)
 );
