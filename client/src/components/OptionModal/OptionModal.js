@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
@@ -6,17 +6,18 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import { requestHelp } from "../redux/actions/authUserActions";
+import { sidebarOpen } from '../redux/actions/sidebarActions'
 
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    opacity: ".75",
     fontFamily: "Roboto",
+    // opacity: ".8",
   },
   paper: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: 'rgb(238,238,238, 0.8)',
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
@@ -40,28 +41,40 @@ const useStyles = makeStyles((theme) => ({
 
 function OptionModal(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
 
+
+  useEffect(() => {
+    const mode = localStorage.getItem('requestHelp')
+    if(mode !== null){
+      props.requestHelp(mode)
+      props.sidebarOpen()
+    }
+  }, [])
+
+  const { authUser } = props
   return (
     <div>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={open}
+        open={props.optionsModal}
         closeAfterTransition
         disableBackdropClick
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}>
-        <Fade in={open}>
+        <Fade in={props.optionsModal}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title">{`Welcome Back`}</h2>
+            <h2 id="transition-modal-title">{`Welcome Back ${authUser.user.username}`}</h2>
             <div className={classes.body}>
               <Button
                 className={classes.margin}
-                onClick={() => props.requestHelp(false)}
+                onClick={() => {
+                  props.requestHelp(false)
+                  props.sidebarOpen()
+                }}
                 variant="contained"
                 color="primary"
                 type="submit">
@@ -70,7 +83,10 @@ function OptionModal(props) {
               <div className={classes.line}></div>
               <Button
                 className={classes.margin}
-                onClick={() => props.requestHelp(true)}
+                onClick={() => {
+                  props.requestHelp(true)
+                  props.sidebarOpen()
+                }}
                 variant="contained"
                 color="primary"
                 type="submit">
@@ -86,8 +102,10 @@ function OptionModal(props) {
 
 const mapStateToProps = (state) => ({
   authUser: state.authUser,
+  optionsModal: state.authUser.optionsModal
 });
 
 export default connect(mapStateToProps, {
   requestHelp,
+  sidebarOpen
 })(OptionModal);

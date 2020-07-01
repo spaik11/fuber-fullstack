@@ -7,9 +7,15 @@ import {
 
 const initialState = {
   isAuthenticated: false,
-  user: null,
+  user: {
+    username: null
+  },
   requestHelp: null,
+<<<<<<< HEAD
   friends: null,
+=======
+  optionsModal: true
+>>>>>>> niko-branch
 };
 
 export default function (state = initialState, action) {
@@ -18,7 +24,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAuthenticated: true,
+<<<<<<< HEAD
         user: action.payload,
+=======
+        user: {...action.payload},
+>>>>>>> niko-branch
       };
     case LOGOUT_USER:
       return {
@@ -26,9 +36,11 @@ export default function (state = initialState, action) {
         user: null,
       };
     case REQUEST_HELP:
+    console.log('Payload: ',action.payload)
       return {
         ...state,
         requestHelp: action.payload,
+        optionsModal: false
       };
     case ADD_FRIEND:
       return {

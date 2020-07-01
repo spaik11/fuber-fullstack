@@ -41,40 +41,42 @@ export class Markers extends Component {
                         </Marker>
                      )
                   }else{
-                     return(
-                        <Marker
-                           key={person.id}
-                           position={{ 
-                              lat: data.userLoc.lat+person.coords.lat, 
-                              lng: data.userLoc.lng+person.coords.lng
-                           }}
-                           icon={{
-                              url: sosMarker,
-                              scaledSize: new window.google.maps.Size(40, 40)
-                           }} 
-                           animation={window.google.maps.Animation.DROP}
-                           onClick={() => {
-                              this.setActiveMarker(
-                              { 
+                     if(!this.props.requestHelp){
+                        return(
+                           <Marker
+                              key={person.id}
+                              position={{ 
                                  lat: data.userLoc.lat+person.coords.lat, 
                                  lng: data.userLoc.lng+person.coords.lng
-                              })
-                           }}
-                        >
-                           <InfoWindow onCloseClick={() => {
-                              // function to close marker's info window
-                           }
-                           }>
-                           <> 
-                              <h4>{person.name}</h4>
-                              <button onClick={() => this.props.getActiveMarker({ 
-                                 lat: data.userLoc.lat+person.coords.lat, 
-                                 lng: data.userLoc.lng+person.coords.lng
-                              })}>Accept request</button>
-                           </>
-                           </InfoWindow>
-                        </Marker>
-                     )
+                              }}
+                              icon={{
+                                 url: sosMarker,
+                                 scaledSize: new window.google.maps.Size(40, 40)
+                              }} 
+                              animation={window.google.maps.Animation.DROP}
+                              onClick={() => {
+                                 this.setActiveMarker(
+                                 { 
+                                    lat: data.userLoc.lat+person.coords.lat, 
+                                    lng: data.userLoc.lng+person.coords.lng
+                                 })
+                              }}
+                           >
+                              <InfoWindow onCloseClick={() => {
+                                 // function to close marker's info window
+                              }
+                              }>
+                              <> 
+                                 <h4>{person.name}</h4>
+                                 <button onClick={() => this.props.getActiveMarker({ 
+                                    lat: data.userLoc.lat+person.coords.lat, 
+                                    lng: data.userLoc.lng+person.coords.lng
+                                 })}>Accept request</button>
+                              </>
+                              </InfoWindow>
+                           </Marker>
+                        )
+                     }
                   }
             })}
          </>
@@ -84,6 +86,7 @@ export class Markers extends Component {
 
 const mapStateToProps = (state) => ({
   data: state.directions,
+  requestHelp: state.authUser.requestHelp
 });
 
 export default connect(mapStateToProps, {getActiveMarker})(Markers)

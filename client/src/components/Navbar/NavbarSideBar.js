@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import parse from 'html-react-parser'
 import { connect } from 'react-redux'
 import { cancelHelp } from '../redux/actions/directionsActions'
+import { requestHelp } from '../redux/actions/authUserActions'
 
 const sideBar = {
    position: 'absolute',
@@ -19,10 +20,11 @@ const sideBar = {
 
 export class NavbarSideBar extends Component {
    render() {
-      const { sidebar, estimate, friendLoc } =  this.props
+      const { sidebar, estimate, friendLoc, requestHelp } =  this.props
       return (
          <div style={{visibility: sidebar ? 'initial' : 'hidden'}}>
             <div style={sideBar}>
+            {console.log(!!requestHelp)}
                {friendLoc && (
                   <div>
                      <p style={{color:'green'}}>{estimate.start_address} </p>
@@ -63,8 +65,9 @@ const mapStateToProps = (state) => ({
    sidebar: state.sidebar.visibility,
    estimate: state.directions.estimate,
    // change line below to request accepted
-   friendLoc: !!state.directions.friendLoc.lat
+   friendLoc: !!state.directions.friendLoc.lat,
+   requestHelp: state.authUser.requestHelp
 })
 
 
-export default connect(mapStateToProps, {cancelHelp})(NavbarSideBar)
+export default connect(mapStateToProps, { cancelHelp, requestHelp })(NavbarSideBar)
