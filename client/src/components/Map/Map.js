@@ -57,24 +57,10 @@ export class Map extends Component {
         if (error) {
           console.log(error);
         }
-<<<<<<< HEAD
-        this.props.getUserLocation({
-          lat: success.coords.latitude,
-          lng: success.coords.longitude,
-        });
-=======
->>>>>>> master
         if (this.props.authUser.user.username) {
           const {
             coords: { latitude: lat, longitude: lng },
           } = success;
-<<<<<<< HEAD
-          this.socket.emit("position", {
-            lat,
-            lng,
-            user: { ...this.props.authUser.user },
-            requestHelp: !!this.props.authUser.requestHelp,
-=======
           this.props.socket.emit("position", {
             user: {
               ...this.props.authUser.user,
@@ -82,7 +68,6 @@ export class Map extends Component {
               lng,
               requestHelp: this.props.authUser.requestHelp,
             },
->>>>>>> master
           });
         }
       });
@@ -91,22 +76,11 @@ export class Map extends Component {
   }
 
   render() {
-<<<<<<< HEAD
-    this.socket.on("otherPositions", (positionsData) => {
-       console.log('Positional data',positionsData)
-      let tempFriends = { ...this.props.authUser.friends };
-      tempFriends[positionsData.user.id] = { ...positionsData };
-
-      this.props.loadFriends(tempFriends);
-    });
-    // console.log("PROPS", this.props);
-=======
     this.props.socket.on("otherPositions", (positionsData) => {
       this.props.loadFriends(positionsData);
     });
 
     console.log("PROPS", this.props);
->>>>>>> master
     const { data, requestHelp } = this.props;
     const { scriptReady } = this.state;
     return (
@@ -122,7 +96,6 @@ export class Map extends Component {
                 ? { lat: data.userLoc.lat, lng: data.userLoc.lng }
                 : { lat: data.defaultLoc.lat, lng: data.defaultLoc.lng }
             }
-<<<<<<< HEAD
                zoom={12}
                options={options}
           >
@@ -146,31 +119,6 @@ export class Map extends Component {
                     }}
                 />
               }
-=======
-            zoom={12}
-            options={options}>
-            {data.userLoc.lat && requestHelp !== null && <Markers />}
-            {data.friendLoc.lat !== null && (
-              <DirectionsService
-                options={{
-                  destination: {
-                    lat: data.friendLoc.lat,
-                    lng: data.friendLoc.lng,
-                  },
-                  origin: { lat: data.userLoc.lat, lng: data.userLoc.lng },
-                  travelMode: "DRIVING", // mode can be changed here
-                }}
-                callback={this.directionsCallback}
-              />
-            )}
-            {data.directions !== null && (
-              <DirectionsRenderer
-                options={{
-                  directions: this.props.data.directions,
-                }}
-              />
-            )}
->>>>>>> master
           </GoogleMap>
         )}
       </LoadScriptNext>

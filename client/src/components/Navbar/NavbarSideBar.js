@@ -30,13 +30,10 @@ export class NavbarSideBar extends Component {
                   :<Helping />
                }
             </div>
-          )}
         </div>
-      </div>
-    );
-  }
+      )
+    }
 }
-
 const mapStateToProps = (state) => ({
    sidebar: state.sidebar.visibility,
    requestHelpBool: state.authUser.requestHelp
