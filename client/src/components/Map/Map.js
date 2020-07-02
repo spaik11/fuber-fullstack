@@ -74,8 +74,8 @@ export class Map extends Component {
 
         this.props.getUserLocation({
           lat: success.coords.latitude,
-          lng: success.coords.longitude
-        })
+          lng: success.coords.longitude,
+        });
       });
     }
     // Need to check refresh page if redux holds request and friends
