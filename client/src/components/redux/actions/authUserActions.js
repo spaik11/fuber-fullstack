@@ -77,6 +77,7 @@ export const logout = () => async (dispatch) => {
     await Axios.get("/api/users/logout");
     Cookies.remove("jwt-cookie-expense");
     Cookies.remove("jwt-refresh-cookie-expense");
+    localStorage.clear();
 
     dispatch({
       type: LOGOUT_USER,
@@ -99,8 +100,7 @@ export const getRefreshToken = () => {
 };
 
 export const requestHelp = (mode) => (dispatch) => {
-
-  localStorage.setItem('requestHelp', mode)
+  localStorage.setItem("requestHelp", mode);
   dispatch({
     type: REQUEST_HELP,
     payload: mode,
