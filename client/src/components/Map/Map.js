@@ -51,6 +51,8 @@ export class Map extends Component {
   };
 
   componentDidMount() {
+    this.props.socket.on('connected-to-socket', clients=>console.log(clients))
+    console.log(!this.props.data.userLoc.lat)
     if (!this.props.data.userLoc.lat) {
       navigator.geolocation.getCurrentPosition((success, error) => {
         if (error) {
@@ -72,8 +74,8 @@ export class Map extends Component {
 
         this.props.getUserLocation({
           lat: success.coords.latitude,
-          lng: success.coords.longitude,
-        });
+          lng: success.coords.longitude
+        })
       });
     }
     // Need to check refresh page if redux holds request and friends
@@ -83,8 +85,8 @@ export class Map extends Component {
     this.props.socket.on("otherPositions", (positionsData) => {
       this.props.loadFriends(positionsData);
     });
-
-    console.log("PROPS", this.props);
+    // console.log(this.props.socket)
+    // console.log("PROPS", this.props);
     const { data, requestHelp } = this.props;
     const { scriptReady } = this.state;
     return (
