@@ -46,7 +46,7 @@ function OptionModal(props) {
   useEffect(() => {
     const mode = localStorage.getItem('requestHelp')
     if(mode !== null){
-      props.requestHelp(mode)
+      props.requestHelp(mode==='true')
       props.sidebarOpen()
     }
   }, [])

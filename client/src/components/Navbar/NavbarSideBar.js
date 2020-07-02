@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import parse from 'html-react-parser'
 import { connect } from 'react-redux'
-import { cancelHelp } from '../redux/actions/directionsActions'
 import { requestHelp } from '../redux/actions/authUserActions'
+
+import Requesting from './Requesting'
+import Helping from './Helping'
 
 const sideBar = {
    position: 'absolute',
@@ -20,41 +21,14 @@ const sideBar = {
 
 export class NavbarSideBar extends Component {
    render() {
-      const { sidebar, estimate, friendLoc, requestHelp } =  this.props
+      const { sidebar, requestHelpBool } =  this.props
       return (
          <div style={{visibility: sidebar ? 'initial' : 'hidden'}}>
             <div style={sideBar}>
-            {console.log(!!requestHelp)}
-               {friendLoc && (
-                  <div>
-                     <p style={{color:'green'}}>{estimate.start_address} </p>
-                     <p style={{color:'red'}}>{estimate.end_address}</p>
-                     <p>Distance: {estimate.distance.text} | Duration: {estimate.duration.text}</p>
-                     <hr/>
-                     <p>Here are the directions</p>
-                     {estimate.steps.map((step, i)=>{
-                        return(
-                           <div key={i}>
-                              {i+1+') '}
-                              {parse(step.instructions)}
-                           </div>
-                        )
-                     })}
-                     <button onClick={()=> this.props.cancelHelp()}>Cancel</button>
-                  </div>
-               )}
-               {!friendLoc && 
-               <div>
-                  <p>List of people you can help</p>
-                  <hr/>
-                  <ul>
-                     <li>Person 1</li>
-                     <li>Person 2</li>
-                     <li>Person 3</li>
-                     <li>Person 4</li>
-                     <li>Person 5</li>
-                  </ul>
-               </div>}
+               {requestHelpBool 
+                  ?<Requesting />
+                  :<Helping />
+               }
             </div>
          </div>
       )
@@ -63,11 +37,8 @@ export class NavbarSideBar extends Component {
 
 const mapStateToProps = (state) => ({
    sidebar: state.sidebar.visibility,
-   estimate: state.directions.estimate,
-   // change line below to request accepted
-   friendLoc: !!state.directions.friendLoc.lat,
-   requestHelp: state.authUser.requestHelp
+   requestHelpBool: state.authUser.requestHelp
 })
 
 
-export default connect(mapStateToProps, { cancelHelp, requestHelp })(NavbarSideBar)
+export default connect(mapStateToProps, { requestHelp })(NavbarSideBar)

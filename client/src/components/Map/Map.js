@@ -12,7 +12,6 @@ import mapStyle from "./lib/mapStyle";
 import {
   getUserLocation,
   getDirections,
-  getActiveMarker,
 } from "../redux/actions/directionsActions";
 import { loadFriends } from "../redux/actions/authUserActions";
 
@@ -59,7 +58,11 @@ export class Map extends Component {
         if (error) {
           console.log(error);
         }
-        if (this.props.authUser.user) {
+        this.props.getUserLocation({
+          lat: success.coords.latitude,
+          lng: success.coords.longitude,
+        });
+        if (this.props.authUser.user.username) {
           const {
             coords: { latitude: lat, longitude: lng },
           } = success;
@@ -67,14 +70,9 @@ export class Map extends Component {
             lat,
             lng,
             user: { ...this.props.authUser.user },
-            requestHelp: { ...this.props.authUser.requestHelp },
+            requestHelp: !!this.props.authUser.requestHelp,
           });
         }
-
-        this.props.getUserLocation({
-          lat: success.coords.latitude,
-          lng: success.coords.longitude,
-        });
       });
     }
     // Need to check refresh page if redux holds request and friends
@@ -82,12 +80,13 @@ export class Map extends Component {
 
   render() {
     this.socket.on("otherPositions", (positionsData) => {
+       console.log('Positional data',positionsData)
       let tempFriends = { ...this.props.authUser.friends };
       tempFriends[positionsData.user.id] = { ...positionsData };
 
       this.props.loadFriends(tempFriends);
     });
-    console.log("PROPS", this.props);
+    // console.log("PROPS", this.props);
     const { data, requestHelp } = this.props;
     const { scriptReady } = this.state;
     return (
@@ -105,7 +104,7 @@ export class Map extends Component {
             }
                zoom={12}
                options={options}
-            >
+          >
             {data.userLoc.lat && requestHelp !== null &&
                <Markers />
             }
@@ -119,14 +118,14 @@ export class Map extends Component {
                      callback={this.directionsCallback}
                />
             }
-               {data.directions !== null && 
-                  <DirectionsRenderer
-                     options={{
-                        directions: this.props.data.directions
-                     }}
-                  />
-               }
-            </GoogleMap>
+              {data.directions !== null && 
+                <DirectionsRenderer
+                    options={{
+                      directions: this.props.data.directions
+                    }}
+                />
+              }
+          </GoogleMap>
         )}
       </LoadScriptNext>
     );
@@ -143,7 +142,6 @@ export default React.memo(
   connect(mapStateToProps, {
     getUserLocation,
     getDirections,
-    getActiveMarker,
     loadFriends,
   })(Map)
 );

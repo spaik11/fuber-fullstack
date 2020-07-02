@@ -64,7 +64,7 @@ export class Navbar extends Component {
   }
 
   render() {
-    const { authUser } = this.props
+    const { authUser, requestAccepted } = this.props
     return (
       <div style={navContainer}>
         <NavbarSideBar />
@@ -78,13 +78,15 @@ export class Navbar extends Component {
             <BlueSwitch 
               checked={!!authUser.requestHelp}
               onChange={ ()=> this.props.requestHelp(!authUser.requestHelp)}
+              disabled={requestAccepted}
             />
             <p style={{color: '#eee'}}>Being Helped</p>
           </div>
         }
         <IconButton
           style={{ color: "#eee" }}
-          onClick={() => this.props.sidebarSwitch()}>
+          onClick={() => this.props.sidebarSwitch()}
+          >
           <MenuIcon fontSize="large" />
         </IconButton>
       </div>
@@ -94,6 +96,7 @@ export class Navbar extends Component {
 
 const mapStateToProps = (state) => ({
   authUser: state.authUser,
+  requestAccepted: state.directions.requestAccepted
 });
 
 export default React.memo(
