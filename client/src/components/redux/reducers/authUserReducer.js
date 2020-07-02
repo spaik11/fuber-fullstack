@@ -29,7 +29,6 @@ export default function (state = initialState, action) {
         user: null,
       };
     case REQUEST_HELP:
-    console.log('Payload: ',action.payload)
       return {
         ...state,
         requestHelp: action.payload,

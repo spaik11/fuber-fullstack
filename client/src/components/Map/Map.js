@@ -12,7 +12,6 @@ import mapStyle from "./lib/mapStyle";
 import {
   getUserLocation,
   getDirections,
-  getActiveMarker,
 } from "../redux/actions/directionsActions";
 import { loadFriends } from "../redux/actions/authUserActions";
 
@@ -71,11 +70,6 @@ export class Map extends Component {
             },
           });
         }
-
-        this.props.getUserLocation({
-          lat: success.coords.latitude,
-          lng: success.coords.longitude,
-        });
       });
     }
     // Need to check refresh page if redux holds request and friends
@@ -102,29 +96,29 @@ export class Map extends Component {
                 ? { lat: data.userLoc.lat, lng: data.userLoc.lng }
                 : { lat: data.defaultLoc.lat, lng: data.defaultLoc.lng }
             }
-            zoom={12}
-            options={options}>
-            {data.userLoc.lat && requestHelp !== null && <Markers />}
-            {data.friendLoc.lat !== null && (
-              <DirectionsService
-                options={{
-                  destination: {
-                    lat: data.friendLoc.lat,
-                    lng: data.friendLoc.lng,
-                  },
-                  origin: { lat: data.userLoc.lat, lng: data.userLoc.lng },
-                  travelMode: "DRIVING", // mode can be changed here
-                }}
-                callback={this.directionsCallback}
-              />
-            )}
-            {data.directions !== null && (
-              <DirectionsRenderer
-                options={{
-                  directions: this.props.data.directions,
-                }}
-              />
-            )}
+               zoom={12}
+               options={options}
+          >
+            {data.userLoc.lat && requestHelp !== null &&
+               <Markers />
+            }
+            {data.friendLoc.lat !== null &&
+               <DirectionsService
+                     options={{
+                        destination: {lat: data.friendLoc.lat, lng: data.friendLoc.lng},
+                        origin: {lat: data.userLoc.lat, lng: data.userLoc.lng},
+                        travelMode: "DRIVING", // mode can be changed here
+                     }}
+                     callback={this.directionsCallback}
+               />
+            }
+              {data.directions !== null && 
+                <DirectionsRenderer
+                    options={{
+                      directions: this.props.data.directions
+                    }}
+                />
+              }
           </GoogleMap>
         )}
       </LoadScriptNext>
@@ -142,7 +136,6 @@ export default React.memo(
   connect(mapStateToProps, {
     getUserLocation,
     getDirections,
-    getActiveMarker,
     loadFriends,
   })(Map)
 );

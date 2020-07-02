@@ -1,8 +1,8 @@
 import {
   DIRECTIONS,
   USER_LOCATION,
-  ACTIVE_MARKER,
   CANCEL_HELP,
+  ACCEPT_REQUEST
 } from "../constants/directionConstants";
 
 export const getDirections = (directions) => (dispatch) => {
@@ -19,15 +19,15 @@ export const getUserLocation = (coordinates) => (dispatch) => {
   });
 };
 
-export const getActiveMarker = (marker) => (dispatch) => {
-  dispatch({
-    type: ACTIVE_MARKER,
-    payload: marker,
-  });
-};
-
 export const cancelHelp = () => (dispatch) => {
   dispatch({
     type: CANCEL_HELP,
   });
 };
+
+export const acceptRequest = (coords) => (dispatch) => {
+  dispatch({
+    type: ACCEPT_REQUEST,
+    payload: coords
+  })
+}

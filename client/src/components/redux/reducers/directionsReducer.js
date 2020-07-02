@@ -1,8 +1,8 @@
 import { 
   DIRECTIONS, 
   USER_LOCATION, 
-  ACTIVE_MARKER, 
-  CANCEL_HELP 
+  CANCEL_HELP,
+  ACCEPT_REQUEST
   } from "../constants/directionConstants";
 
 const initialState = {
@@ -52,12 +52,12 @@ export default function (state = initialState, action) {
         ...state,
         userLoc: { ...action.payload },
       };
-    case ACTIVE_MARKER:
+    case ACCEPT_REQUEST:
       return {
         ...state,
         friendLoc: action.payload,
-        requestAccepted: true,
-      };
+        requestAccepted: true
+      }
     case CANCEL_HELP:
       const friendLocCopy = state.friendLoc;
       friendLocCopy.lat = null;

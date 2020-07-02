@@ -5,7 +5,7 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 
-import { getActiveMarker } from "../../redux/actions/directionsActions";
+import { acceptRequest } from "../../redux/actions/directionsActions";
 
 import personMarker from '../../../assets/personMarker.png'
 import sosMarker from '../../../assets/sosMarker.png'
@@ -55,11 +55,7 @@ export class Markers extends Component {
                               }} 
                               animation={window.google.maps.Animation.DROP}
                               onClick={() => {
-                                 this.setActiveMarker(
-                                 { 
-                                    lat: data.userLoc.lat+person.coords.lat, 
-                                    lng: data.userLoc.lng+person.coords.lng
-                                 })
+                                 //function on marker click
                               }}
                            >
                               <InfoWindow onCloseClick={() => {
@@ -68,7 +64,7 @@ export class Markers extends Component {
                               }>
                               <> 
                                  <h4>{person.name}</h4>
-                                 <button onClick={() => this.props.getActiveMarker({ 
+                                 <button onClick={() => this.props.acceptRequest({ 
                                     lat: data.userLoc.lat+person.coords.lat, 
                                     lng: data.userLoc.lng+person.coords.lng
                                  })}>Accept request</button>
@@ -89,4 +85,4 @@ const mapStateToProps = (state) => ({
   requestHelp: state.authUser.requestHelp
 });
 
-export default connect(mapStateToProps, {getActiveMarker})(Markers)
+export default connect(mapStateToProps, { acceptRequest })(Markers)
