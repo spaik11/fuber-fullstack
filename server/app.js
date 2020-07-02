@@ -12,7 +12,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const xss = require("xss-clean");
 const mongoose = require("mongoose");
-const indexRouter = require("./routes/index")(io);
+// const indexRouter = require("./routes/index")(io);
 const usersRouter = require("./routes/users/users");
 require("dotenv").config();
 
@@ -49,7 +49,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
+// app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 
 let userArray = [];

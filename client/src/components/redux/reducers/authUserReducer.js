@@ -8,11 +8,11 @@ import {
 const initialState = {
   isAuthenticated: false,
   user: {
-    username: null
+    username: null,
   },
   requestHelp: null,
   friends: null,
-  optionsModal: true
+  optionsModal: true,
 };
 
 export default function (state = initialState, action) {
@@ -26,13 +26,13 @@ export default function (state = initialState, action) {
     case LOGOUT_USER:
       return {
         isAuthenticated: false,
-        user: null,
+        user: { username: null },
       };
     case REQUEST_HELP:
       return {
         ...state,
         requestHelp: action.payload,
-        optionsModal: false
+        optionsModal: false,
       };
     case ADD_FRIEND:
       return {
