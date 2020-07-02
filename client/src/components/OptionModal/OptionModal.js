@@ -6,7 +6,7 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import { requestHelp } from "../redux/actions/authUserActions";
-import { sidebarOpen } from '../redux/actions/sidebarActions'
+import { sidebarOpen } from "../redux/actions/sidebarActions";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     // opacity: ".8",
   },
   paper: {
-    backgroundColor: 'rgb(238,238,238, 0.8)',
+    backgroundColor: "rgb(238,238,238, 0.8)",
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
@@ -42,16 +42,15 @@ const useStyles = makeStyles((theme) => ({
 function OptionModal(props) {
   const classes = useStyles();
 
-
   useEffect(() => {
-    const mode = localStorage.getItem('requestHelp')
-    if(mode !== null){
-      props.requestHelp(mode)
-      props.sidebarOpen()
+    const mode = localStorage.getItem("requestHelp");
+    if (mode !== null) {
+      props.requestHelp(mode);
+      props.sidebarOpen();
     }
-  }, [])
+  }, []);
 
-  const { authUser } = props
+  const { authUser } = props;
   return (
     <div>
       <Modal
@@ -72,8 +71,8 @@ function OptionModal(props) {
               <Button
                 className={classes.margin}
                 onClick={() => {
-                  props.requestHelp(false)
-                  props.sidebarOpen()
+                  props.requestHelp(false);
+                  props.sidebarOpen();
                 }}
                 variant="contained"
                 color="primary"
@@ -84,8 +83,8 @@ function OptionModal(props) {
               <Button
                 className={classes.margin}
                 onClick={() => {
-                  props.requestHelp(true)
-                  props.sidebarOpen()
+                  props.requestHelp(true);
+                  props.sidebarOpen();
                 }}
                 variant="contained"
                 color="primary"
@@ -102,10 +101,10 @@ function OptionModal(props) {
 
 const mapStateToProps = (state) => ({
   authUser: state.authUser,
-  optionsModal: state.authUser.optionsModal
+  optionsModal: state.authUser.optionsModal,
 });
 
 export default connect(mapStateToProps, {
   requestHelp,
-  sidebarOpen
+  sidebarOpen,
 })(OptionModal);

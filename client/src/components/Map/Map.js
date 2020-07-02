@@ -35,7 +35,6 @@ export class Map extends Component {
     this.state = {
       scriptReady: false,
     };
-    this.socket = io.connect("http://localhost:3001");
   }
 
   scriptLoaded = () => {
@@ -59,15 +58,17 @@ export class Map extends Component {
         if (error) {
           console.log(error);
         }
-        if (this.props.authUser.user) {
+        if (this.props.authUser.user.username) {
           const {
             coords: { latitude: lat, longitude: lng },
           } = success;
-          this.socket.emit("position", {
-            lat,
-            lng,
-            user: { ...this.props.authUser.user },
-            requestHelp: { ...this.props.authUser.requestHelp },
+          this.props.socket.emit("position", {
+            user: {
+              ...this.props.authUser.user,
+              lat,
+              lng,
+              requestHelp: this.props.authUser.requestHelp,
+            },
           });
         }
 
@@ -81,12 +82,10 @@ export class Map extends Component {
   }
 
   render() {
-    this.socket.on("otherPositions", (positionsData) => {
-      let tempFriends = { ...this.props.authUser.friends };
-      tempFriends[positionsData.user.id] = { ...positionsData };
-
-      this.props.loadFriends(tempFriends);
+    this.props.socket.on("otherPositions", (positionsData) => {
+      this.props.loadFriends(positionsData);
     });
+
     console.log("PROPS", this.props);
     const { data, requestHelp } = this.props;
     const { scriptReady } = this.state;
@@ -103,30 +102,30 @@ export class Map extends Component {
                 ? { lat: data.userLoc.lat, lng: data.userLoc.lng }
                 : { lat: data.defaultLoc.lat, lng: data.defaultLoc.lng }
             }
-               zoom={12}
-               options={options}
-            >
-            {data.userLoc.lat && requestHelp !== null &&
-               <Markers />
-            }
-            {data.friendLoc.lat !== null &&
-               <DirectionsService
-                     options={{
-                        destination: {lat: data.friendLoc.lat, lng: data.friendLoc.lng},
-                        origin: {lat: data.userLoc.lat, lng: data.userLoc.lng},
-                        travelMode: "DRIVING", // mode can be changed here
-                     }}
-                     callback={this.directionsCallback}
-               />
-            }
-               {data.directions !== null && 
-                  <DirectionsRenderer
-                     options={{
-                        directions: this.props.data.directions
-                     }}
-                  />
-               }
-            </GoogleMap>
+            zoom={12}
+            options={options}>
+            {data.userLoc.lat && requestHelp !== null && <Markers />}
+            {data.friendLoc.lat !== null && (
+              <DirectionsService
+                options={{
+                  destination: {
+                    lat: data.friendLoc.lat,
+                    lng: data.friendLoc.lng,
+                  },
+                  origin: { lat: data.userLoc.lat, lng: data.userLoc.lng },
+                  travelMode: "DRIVING", // mode can be changed here
+                }}
+                callback={this.directionsCallback}
+              />
+            )}
+            {data.directions !== null && (
+              <DirectionsRenderer
+                options={{
+                  directions: this.props.data.directions,
+                }}
+              />
+            )}
+          </GoogleMap>
         )}
       </LoadScriptNext>
     );
@@ -136,7 +135,7 @@ export class Map extends Component {
 const mapStateToProps = (state) => ({
   data: state.directions,
   authUser: state.authUser,
-  requestHelp: state.authUser.requestHelp
+  requestHelp: state.authUser.requestHelp,
 });
 
 export default React.memo(
