@@ -6,18 +6,18 @@ import Requesting from './Requesting'
 import Helping from './Helping'
 
 const sideBar = {
-   position: 'absolute',
-   top: '3rem',
-   right: 0,
-   zIndex: 1500,
-   color: '#0f0f0f',
-   background: 'rgba(238, 238, 238, 0.8)',
-   minWidth: '20rem',
-   width: '20%',
-   minHeight: '50%',
-   borderRadius: '0 0 0 15px',
-   // overflow: 'scroll'
-}
+  position: "absolute",
+  top: "3rem",
+  right: 0,
+  zIndex: 1500,
+  color: "#0f0f0f",
+  background: "rgba(238, 238, 238, 0.8)",
+  minWidth: "20rem",
+  width: "20%",
+  minHeight: "50%",
+  borderRadius: "0 0 0 15px",
+  // overflow: 'scroll'
+};
 
 export class NavbarSideBar extends Component {
    render() {
@@ -30,9 +30,11 @@ export class NavbarSideBar extends Component {
                   :<Helping />
                }
             </div>
-         </div>
-      )
-   }
+          )}
+        </div>
+      </div>
+    );
+  }
 }
 
 const mapStateToProps = (state) => ({

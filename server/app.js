@@ -52,15 +52,31 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 
+let userArray = [];
+
 io.on("connection", (socket) => {
   io.clients((error, clients) => {
     if (error) throw error;
     console.log("clients", clients);
   });
 
+  console.log(`A socket connection to the server has been made: ${socket.id}`);
+
   socket.on("position", (position) => {
     console.log("position", position);
-    socket.broadcast.emit("otherPositions", position);
+    let connectionId = socket.id;
+    userArray.push({ ...position, connectionId });
+    socket.broadcast.emit("otherPositions", userArray);
+    console.log("USER ARR", userArray);
+  });
+
+  socket.on("disconnect", () => {
+    let disconnectUser = userArray.find(
+      (user) => user.connectionId === socket.id
+    );
+    userArray.splice(userArray.indexOf(disconnectUser), 1);
+    console.log("DISCONNECT USER ARR", userArray);
+    console.log(`Connection ${socket.id} has left the building`);
   });
 });
 
