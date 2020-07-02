@@ -12,7 +12,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const xss = require("xss-clean");
 const mongoose = require("mongoose");
-const indexRouter = require("./routes/index")(io);
+// const indexRouter = require("./routes/index")(io);
 const usersRouter = require("./routes/users/users");
 require("dotenv").config();
 
@@ -49,16 +49,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
+// app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 
 let userArray = [];
+console.log(userArray)
 
 io.on("connection", (socket) => {
   io.clients((error, clients) => {
     if (error) throw error;
     console.log("clients", clients);
+    console.log(userArray)
+    io.emit('connected-to-socket', userArray)
   });
+
 
   console.log(`A socket connection to the server has been made: ${socket.id}`);
 
@@ -66,7 +70,8 @@ io.on("connection", (socket) => {
     console.log("position", position);
     let connectionId = socket.id;
     userArray.push({ ...position, connectionId });
-    socket.broadcast.emit("otherPositions", userArray);
+    io.emit('connected-to-socket', userArray)
+    // socket.broadcast.emit("otherPositions", userArray);
     console.log("USER ARR", userArray);
   });
 
@@ -74,7 +79,9 @@ io.on("connection", (socket) => {
     let disconnectUser = userArray.find(
       (user) => user.connectionId === socket.id
     );
+    console.log('Disconnected user', disconnectUser)
     userArray.splice(userArray.indexOf(disconnectUser), 1);
+    io.emit('connected-to-socket', userArray)
     console.log("DISCONNECT USER ARR", userArray);
     console.log(`Connection ${socket.id} has left the building`);
   });
