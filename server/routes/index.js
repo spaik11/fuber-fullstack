@@ -3,6 +3,7 @@ module.exports = function (io) {
   const router = app.Router();
 
   io.on("connection", function (socket) {
+    console.log('On connection from index')
     // console.log(
     //   `A socket connection to the server has been made: ${socket.id}`
     // );
