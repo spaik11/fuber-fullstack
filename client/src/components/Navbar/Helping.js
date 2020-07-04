@@ -5,7 +5,7 @@ import parse from 'html-react-parser'
 import { cancelHelp } from '../redux/actions/directionsActions'
 
 export const Helping = (props) => {
-   const { requestAccepted, estimate } = props
+   const { requestAccepted, estimate, friendList } = props
    return (
       <div>
          {requestAccepted && (
@@ -27,17 +27,23 @@ export const Helping = (props) => {
             </div>
          )}
          {!requestAccepted &&
-            <div>
-               <p>List of people you can help</p>
-               <hr/>
-               <ul>
-                  <li>Person 1</li>
-                  <li>Person 2</li>
-                  <li>Person 3</li>
-                  <li>Person 4</li>
-                  <li>Person 5</li>
-               </ul>
-            </div>
+            <>
+               {friendList.length<1
+               ? <h3 style={{textAlign: 'center'}}>Good news! No active requests</h3>
+               : <>
+                  <h3 style={{textAlign: 'center'}}>They need your help:</h3>
+                  <ul>
+                     {friendList.map(friend=>{
+                        return(
+                           <React.Fragment key={friend.id}>
+                           <li>{friend.username}</li>
+                           </React.Fragment>
+                        )
+                     })}
+                  </ul>
+               </>
+               }
+            </>
          }
       </div>
    )
@@ -46,6 +52,7 @@ export const Helping = (props) => {
 const mapStateToProps = (state) => ({
    estimate: state.directions.estimate,
    requestAccepted: state.directions.requestAccepted,
+   friendList: state.authUser.friends
 })
 
 const mapDispatchToProps = {

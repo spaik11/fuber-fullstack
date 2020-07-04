@@ -87,7 +87,7 @@ const Login = (props) => {
         return errorState;
     }
   };
-
+  
   const handleChange = (event) => {
     let inputForm = {
       ...values,
@@ -129,9 +129,12 @@ const Login = (props) => {
         ...values,
       };
 
-      await props.loginUser({
+      const success = await props.loginUser({
         email: email.value,
         password: password.value,
+        requestHelp: false,
+        lat: props.coords.lat,
+        lng: props.coords.lng,
       });
 
       successToast("Welcome Back!");
@@ -192,6 +195,8 @@ const Login = (props) => {
 const mapStateToProps = (state) => {
   return {
     authUser: state.authUser,
+    socket: state.authUser.socket,
+    coords: state.directions.userLoc
   };
 };
 

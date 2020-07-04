@@ -3,7 +3,9 @@ const express = require("express");
 const compression = require("compression");
 const app = express();
 const socket_io = require("socket.io");
-const io = socket_io();
+const io = socket_io({
+  pingTimeout: 60000
+});
 app.io = io;
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -53,27 +55,33 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/users", usersRouter);
 
 let userArray = [];
-console.log(userArray)
 
 io.on("connection", (socket) => {
   io.clients((error, clients) => {
     if (error) throw error;
     console.log("clients", clients);
-    console.log(userArray)
     io.emit('connected-to-socket', userArray)
   });
 
+  socket.on("initial-connect", (userInfo)=>{
+    let connectionId = socket.id;
+    const emailList = userArray.map(entry => entry.email)
+    if(!emailList.includes(userInfo.email)){
+      userArray.push({ ...userInfo, connectionId });
+    }
+    io.emit('updated-user-list', userArray)
+  })
+
+  socket.on("user-coordinates", (coords)=>{
+    let foundUser = userArray.find((user) => user.email === coords.email);
+    userArray.splice(userArray.indexOf(foundUser), 1)
+    foundUser.lat = coords.lat
+    foundUser.lng = coords.lng
+    userArray.push(foundUser)
+    io.emit('updated-user-list', userArray)
+  })
 
   console.log(`A socket connection to the server has been made: ${socket.id}`);
-
-  socket.on("position", (position) => {
-    console.log("position", position);
-    let connectionId = socket.id;
-    userArray.push({ ...position, connectionId });
-    io.emit('connected-to-socket', userArray)
-    // socket.broadcast.emit("otherPositions", userArray);
-    console.log("USER ARR", userArray);
-  });
 
   socket.on("disconnect", () => {
     let disconnectUser = userArray.find(
@@ -81,7 +89,7 @@ io.on("connection", (socket) => {
     );
     console.log('Disconnected user', disconnectUser)
     userArray.splice(userArray.indexOf(disconnectUser), 1);
-    io.emit('connected-to-socket', userArray)
+    io.emit('updated-user-list', userArray)
     console.log("DISCONNECT USER ARR", userArray);
     console.log(`Connection ${socket.id} has left the building`);
   });

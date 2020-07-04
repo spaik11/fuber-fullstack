@@ -83,7 +83,7 @@ function OptionModal(props) {
               <Button
                 className={classes.margin}
                 onClick={() => {
-                  props.requestHelp(true);
+                  props.requestHelp(false);
                   props.sidebarOpen();
                 }}
                 variant="contained"

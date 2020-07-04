@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import io from "socket.io-client";
 import {
   GoogleMap,
   LoadScriptNext,
@@ -12,7 +13,7 @@ import {
   getUserLocation,
   getDirections,
 } from "../redux/actions/directionsActions";
-import { loadFriends } from "../redux/actions/authUserActions";
+import { loadFriends, setSocket } from "../redux/actions/authUserActions";
 
 import Markers from "./Markers/Markers";
 
@@ -27,11 +28,13 @@ const options = {
   zoomControl: true,
 };
 
+
 export class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
       scriptReady: false,
+      socket: null
     };
   }
 
@@ -49,43 +52,58 @@ export class Map extends Component {
       }
     }
   };
+  
+  initializeSocket = async()=>{
+    const socket = await io("http://localhost:3001");
+
+    socket.on('connect', ()=>{
+      console.log('Connected to socket')
+      this.props.setSocket(socket)
+
+      if(this.props.authUser.user.username) {
+        socket.emit("initial-connect", {
+          ...this.props.authUser.user,
+          requestHelp: this.props.authUser.requestHelp,
+          lat: null,
+          lng: null
+        })
+      }
+      this.receiveUserCoordinates(socket)
+    })
+    socket.on('updated-user-list',userArray=>{
+      console.log(userArray)
+      this.props.loadFriends(userArray)
+    })
+  }
+
+  receiveUserCoordinates=(socket)=>{
+    navigator.geolocation.getCurrentPosition((success, error) => {
+      if (error) {
+        console.log(error);
+      }
+      const {
+        coords: { latitude: lat, longitude: lng },
+      } = success;
+      this.props.getUserLocation({
+        lat,
+        lng
+      });
+
+      if (this.props.authUser.user.email) {
+        socket.emit('user-coordinates', {
+          email: this.props.authUser.user.email,
+          lat: this.props.data.userLoc.lat,
+          lng: this.props.data.userLoc.lng,
+        })
+      }
+    });
+  }
 
   componentDidMount() {
-    this.props.socket.on('connected-to-socket', clients=>console.log(clients))
-    console.log(!this.props.data.userLoc.lat)
-    if (!this.props.data.userLoc.lat) {
-      navigator.geolocation.getCurrentPosition((success, error) => {
-        if (error) {
-          console.log(error);
-        }
-        if (this.props.authUser.user.username) {
-          const {
-            coords: { latitude: lat, longitude: lng },
-          } = success;
-          this.props.socket.emit("position", {
-            user: {
-              ...this.props.authUser.user,
-              lat,
-              lng,
-              requestHelp: this.props.authUser.requestHelp,
-            },
-          });
-        }
-
-        this.props.getUserLocation({
-          lat: success.coords.latitude,
-          lng: success.coords.longitude,
-        });
-      });
-    }
-    // Need to check refresh page if redux holds request and friends
+    this.initializeSocket()
   }
 
   render() {
-    this.props.socket.on("otherPositions", (positionsData) => {
-      this.props.loadFriends(positionsData);
-    });
-    // console.log(this.props.socket)
     // console.log("PROPS", this.props);
     const { data, requestHelp } = this.props;
     const { scriptReady } = this.state;
@@ -143,5 +161,6 @@ export default React.memo(
     getUserLocation,
     getDirections,
     loadFriends,
+    setSocket
   })(Map)
 );

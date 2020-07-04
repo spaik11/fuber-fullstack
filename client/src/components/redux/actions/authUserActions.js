@@ -7,6 +7,7 @@ import {
   LOGOUT_USER,
   REQUEST_HELP,
   ADD_FRIEND,
+  SET_SOCKET
 } from "../constants/authUserConstants";
 
 export const createUser = (userInfo) => async (dispatch) => {
@@ -37,7 +38,12 @@ export const loginUser = (userInfo) => async (dispatch) => {
     });
     dispatch({
       type: LOGIN_USER,
-      payload: success.data,
+      payload: {
+        ...success.data, 
+        requestHelp: userInfo.requestHelp,
+        lat: userInfo.lat,
+        lng: userInfo.lng,},
+
     });
 
     return Promise.resolve();
@@ -113,3 +119,10 @@ export const loadFriends = (friends) => (dispatch) => {
     payload: friends,
   });
 };
+
+export const setSocket = (socket) => (dispatch) => {
+  dispatch({
+    type: SET_SOCKET,
+    payload: socket,
+  });
+}
