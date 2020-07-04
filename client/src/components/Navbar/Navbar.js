@@ -106,6 +106,7 @@ export class Navbar extends Component {
 const mapStateToProps = (state) => ({
   authUser: state.authUser,
   requestAccepted: state.directions.requestAccepted,
+  socket: state.authUser.socket
 });
 
 export default React.memo(

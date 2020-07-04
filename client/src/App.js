@@ -9,10 +9,7 @@ import OptionModal from "./components/OptionModal/OptionModal";
 import Navbar from "./components/Navbar/Navbar";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import store from "./components/redux/store/store";
-import io from "socket.io-client";
 import "./App.css";
-
-const socket = io.connect("http://localhost:3001");
 
 export default function App() {
   return (
@@ -22,7 +19,7 @@ export default function App() {
         <div
           style={{ height: `100%`, display: "flex", flexDirection: "column" }}>
           <Navbar />
-          <Map socket={socket} />
+          <Map />
         </div>
         <Switch>
           <PrivateRoute exact path="/option" component={OptionModal} />

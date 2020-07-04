@@ -9,6 +9,7 @@ const margin={
 
 export const Requesting = () => {
 
+   const [requestStatus, setRequestStatus] = useState(false)
    const [subject, setSubject] = useState('')
    const [description, setDescription] = useState('')
    const [incentive, setIncentive] = useState('')
@@ -30,11 +31,19 @@ export const Requesting = () => {
       console.log(subject)
       console.log(description)
       console.log(incentive)
+      setRequestStatus(true)
+   }
+
+   const handleCancel = () =>{
+      setRequestStatus(false)
    }
 
    return (
       <div> 
-         <h3 style={{textAlign: 'center'}}>Please compose your request:</h3>
+         {requestStatus
+            ?<h3 style={{textAlign: 'center'}}>Description</h3>
+            :<h3 style={{textAlign: 'center'}}>Please compose your request:</h3>
+         }
          <div style={{display:'flex', flexDirection: 'column', margin:'5px'}}>
             <TextField 
                label="Subject" 
@@ -43,6 +52,7 @@ export const Requesting = () => {
                onChange={handleChange}
                value={subject}
                name='subject'
+               disabled={requestStatus}
                />
             <TextField
                label="Description of your request"
@@ -53,6 +63,7 @@ export const Requesting = () => {
                onChange={handleChange}
                value={description}
                name='description'
+               disabled={requestStatus}
             />
             <TextField 
                label="Incentive is optional" 
@@ -61,14 +72,24 @@ export const Requesting = () => {
                onChange={handleChange} 
                value={incentive}  
                name='incentive'
+               disabled={requestStatus}
             />
-            <Button 
-               type="submit"
-               variant="contained"
-               color="primary"
-               style={margin}
-               onClick={()=>handleSubmit()}
-            >Submit</Button>
+            {requestStatus
+            ?  <Button 
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  style={margin}
+                  onClick={()=>handleCancel()}
+               >Cancel</Button>
+             : <Button 
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  style={margin}
+                  onClick={()=>handleSubmit()}
+               >Submit</Button>
+            }
          </div>
       </div>
    )
