@@ -4,7 +4,7 @@ import { TextField, Button } from "@material-ui/core";
 import validator from "validator";
 import { connect } from "react-redux";
 import { loginUser } from "../redux/actions/authUserActions";
-import { successToast, failureToast } from "../Toastify/Toast";
+import { failureToast } from "../Toastify/Toast";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,7 +87,7 @@ const Login = (props) => {
         return errorState;
     }
   };
-  
+
   const handleChange = (event) => {
     let inputForm = {
       ...values,
@@ -136,8 +136,6 @@ const Login = (props) => {
         lat: props.coords.lat,
         lng: props.coords.lng,
       });
-
-      successToast("Welcome Back!");
 
       inputForm["email"].value = "";
       inputForm["password"].value = "";
@@ -196,7 +194,7 @@ const mapStateToProps = (state) => {
   return {
     authUser: state.authUser,
     socket: state.authUser.socket,
-    coords: state.directions.userLoc
+    coords: state.directions.userLoc,
   };
 };
 
