@@ -3,7 +3,7 @@ import {
   LOGOUT_USER,
   REQUEST_HELP,
   ADD_FRIEND,
-  SET_SOCKET
+  SET_SOCKET,
 } from "../constants/authUserConstants";
 
 const initialState = {
@@ -14,17 +14,17 @@ const initialState = {
   requestHelp: null,
   friends: [],
   optionsModal: true,
-  socket: null
+  socket: null,
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
     case LOGIN_USER:
-    if(state.socket){
-      state.socket.emit("initial-connect", {
-        ...action.payload
-      })
-    }
+      if (state.socket) {
+        state.socket.emit("initial-connect", {
+          ...action.payload,
+        });
+      }
       return {
         ...state,
         isAuthenticated: true,
@@ -49,8 +49,8 @@ export default function (state = initialState, action) {
     case SET_SOCKET:
       return {
         ...state,
-        socket: action.payload
-      }
+        socket: action.payload,
+      };
     default:
       return state;
   }

@@ -14,31 +14,31 @@ import {
   logout,
 } from "../redux/actions/authUserActions";
 import { requestHelp } from "../redux/actions/authUserActions";
-
-const navContainer = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  background: "black",
-  color: "#eee",
-  height: "3rem",
-  padding: "0 20px",
-};
-
-const logoContainer = {
-  height: "100%",
-  width: "100%",
-  display: "flex",
-  alignItems: "center",
-};
-
-const logoStyle = {
-  height: "100%",
-  maxWidth: "100%",
-  padding: "0 10px",
-};
+import { toggleDarkMode } from "../redux/actions/darkModeActions";
+import {
+  darkNavContainer,
+  lightNavContainer,
+  darkNav,
+  lightNav,
+  logoContainer,
+  logoStyle,
+} from "./NavbarStyle";
 
 const BlueSwitch = withStyles({
+  switchBase: {
+    color: blue[300],
+    "&$checked": {
+      color: blue[500],
+    },
+    "&$checked + $track": {
+      backgroundColor: blue[500],
+    },
+  },
+  checked: {},
+  track: { backgroundColor: blue[500] },
+})(Switch);
+
+const BlackSwitch = withStyles({
   switchBase: {
     color: blue[300],
     "&$checked": {
@@ -66,7 +66,12 @@ export class Navbar extends Component {
   render() {
     const { authUser, requestAccepted } = this.props;
     return (
-      <div style={navContainer}>
+      <div
+        style={
+          this.props.isDarkMode.isDarkMode
+            ? darkNavContainer
+            : lightNavContainer
+        }>
         <NavbarSideBar />
         <div style={logoContainer}>
           <img style={logoStyle} src={logo} alt="fuber logo" />
@@ -74,27 +79,47 @@ export class Navbar extends Component {
         </div>
         {authUser.requestHelp !== null && (
           <div style={{ display: "flex", alignItems: "center", width: "120%" }}>
-            <p style={{ color: "#eee" }}>Helping</p>
+            <p style={this.props.isDarkMode.isDarkMode ? darkNav : lightNav}>
+              Helping
+            </p>
             <BlueSwitch
               checked={!!authUser.requestHelp}
               onChange={() => this.props.requestHelp(!authUser.requestHelp)}
               disabled={requestAccepted}
             />
-            <p style={{ color: "#eee" }}>Being Helped</p>
+            <p style={this.props.isDarkMode.isDarkMode ? darkNav : lightNav}>
+              Being Helped
+            </p>
           </div>
         )}
         {authUser.user.username !== null ? (
-          <Button
-            style={{ color: "#eee" }}
-            onClick={() => {
-              this.props.logout();
-              window.location.reload();
-            }}>
-            LogOut
-          </Button>
+          <>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: "10%",
+              }}>
+              <BlackSwitch
+                checked={this.props.isDarkMode.isDarkMode}
+                onChange={() => this.props.toggleDarkMode()}
+              />
+              {/* <p style={this.props.isDarkMode.isDarkMode ? darkNav : lightNav}>
+                Dark Mode
+              </p> */}
+            </div>
+            <Button
+              style={this.props.isDarkMode.isDarkMode ? darkNav : lightNav}
+              onClick={() => {
+                this.props.logout();
+                window.location.reload();
+              }}>
+              LogOut
+            </Button>
+          </>
         ) : null}
         <IconButton
-          style={{ color: "#eee" }}
+          style={this.props.isDarkMode.isDarkMode ? darkNav : lightNav}
           onClick={() => this.props.sidebarSwitch()}>
           <MenuIcon fontSize="large" />
         </IconButton>
@@ -106,11 +131,16 @@ export class Navbar extends Component {
 const mapStateToProps = (state) => ({
   authUser: state.authUser,
   requestAccepted: state.directions.requestAccepted,
-  socket: state.authUser.socket
+  socket: state.authUser.socket,
+  isDarkMode: state.isDarkMode,
 });
 
 export default React.memo(
-  connect(mapStateToProps, { sidebarSwitch, setUserAuth, requestHelp, logout })(
-    Navbar
-  )
+  connect(mapStateToProps, {
+    sidebarSwitch,
+    setUserAuth,
+    requestHelp,
+    logout,
+    toggleDarkMode,
+  })(Navbar)
 );

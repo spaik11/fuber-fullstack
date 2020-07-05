@@ -7,14 +7,14 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import { connect } from "react-redux";
-
-import mapStyle from "./lib/mapStyle";
 import {
   getUserLocation,
   getDirections,
 } from "../redux/actions/directionsActions";
 import { loadFriends, setSocket } from "../redux/actions/authUserActions";
+import { toggleDarkMode } from "../redux/actions/darkModeActions";
 
+import { DARK_MODE, LIGHT_MODE } from "./lib/mapStyle";
 import Markers from "./Markers/Markers";
 
 const containerStyle = {
@@ -22,19 +22,12 @@ const containerStyle = {
   height: "100%",
 };
 
-const options = {
-  styles: mapStyle,
-  disableDefaultUI: true,
-  zoomControl: true,
-};
-
-
 export class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
       scriptReady: false,
-      socket: null
+      socket: null,
     };
   }
 
@@ -52,31 +45,31 @@ export class Map extends Component {
       }
     }
   };
-  
-  initializeSocket = async()=>{
+
+  initializeSocket = async () => {
     const socket = await io("http://localhost:3001");
 
-    socket.on('connect', ()=>{
-      console.log('Connected to socket')
-      this.props.setSocket(socket)
+    socket.on("connect", () => {
+      console.log("Connected to socket");
+      this.props.setSocket(socket);
 
-      if(this.props.authUser.user.username) {
+      if (this.props.authUser.user.username) {
         socket.emit("initial-connect", {
           ...this.props.authUser.user,
           requestHelp: this.props.authUser.requestHelp,
           lat: null,
-          lng: null
-        })
+          lng: null,
+        });
       }
-      this.receiveUserCoordinates(socket)
-    })
-    socket.on('updated-user-list',userArray=>{
-      console.log(userArray)
-      this.props.loadFriends(userArray)
-    })
-  }
+      this.receiveUserCoordinates(socket);
+    });
+    socket.on("updated-user-list", (userArray) => {
+      console.log(userArray);
+      this.props.loadFriends(userArray);
+    });
+  };
 
-  receiveUserCoordinates=(socket)=>{
+  receiveUserCoordinates = (socket) => {
     navigator.geolocation.getCurrentPosition((success, error) => {
       if (error) {
         console.log(error);
@@ -86,21 +79,27 @@ export class Map extends Component {
       } = success;
       this.props.getUserLocation({
         lat,
-        lng
+        lng,
       });
 
       if (this.props.authUser.user.email) {
-        socket.emit('user-coordinates', {
+        socket.emit("user-coordinates", {
           email: this.props.authUser.user.email,
           lat: this.props.data.userLoc.lat,
           lng: this.props.data.userLoc.lng,
-        })
+        });
       }
     });
-  }
+  };
 
   componentDidMount() {
-    this.initializeSocket()
+    let darkMode = localStorage.getItem("darkMode");
+
+    if (darkMode === "true") {
+      this.props.toggleDarkMode();
+    }
+
+    this.initializeSocket();
   }
 
   render() {
@@ -121,7 +120,11 @@ export class Map extends Component {
                 : { lat: data.defaultLoc.lat, lng: data.defaultLoc.lng }
             }
             zoom={12}
-            options={options}>
+            options={{
+              styles: this.props.isDarkMode.isDarkMode ? DARK_MODE : LIGHT_MODE,
+              disableDefaultUI: true,
+              zoomControl: true,
+            }}>
             {data.userLoc.lat && requestHelp !== null && <Markers />}
             {data.friendLoc.lat !== null && (
               <DirectionsService
@@ -154,6 +157,7 @@ const mapStateToProps = (state) => ({
   data: state.directions,
   authUser: state.authUser,
   requestHelp: state.authUser.requestHelp,
+  isDarkMode: state.isDarkMode,
 });
 
 export default React.memo(
@@ -161,6 +165,7 @@ export default React.memo(
     getUserLocation,
     getDirections,
     loadFriends,
-    setSocket
+    setSocket,
+    toggleDarkMode,
   })(Map)
 );
