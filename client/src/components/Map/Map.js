@@ -47,7 +47,7 @@ export class Map extends Component {
   };
 
   initializeSocket = async () => {
-    const socket = await io(window.location.hostname);
+    const socket = await io("/");
 
     socket.on("connect", () => {
       console.log("Connected to socket");

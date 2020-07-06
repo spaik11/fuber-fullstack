@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "bufferutil": "^4.0.1",
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
@@ -23,7 +24,9 @@
     "morgan": "~1.9.1",
     "nodemon": "^2.0.4",
     "socket.io": "^2.3.0",
+    "utf-8-validate": "^5.0.2",
     "validator": "^13.1.1",
+    "ws": "^7.3.1",
     "xss-clean": "^0.1.1"
   }
 }
