@@ -4,7 +4,7 @@ const compression = require("compression");
 const app = express();
 const socket_io = require("socket.io");
 const io = socket_io({
-  pingTimeout: 60000
+  pingTimeout: 60000,
 });
 app.io = io;
 const path = require("path");
@@ -19,7 +19,7 @@ const usersRouter = require("./routes/users/users");
 require("dotenv").config();
 
 mongoose
-  .connect(process.env.MONGO_DB, {
+  .connect(process.env.MONGODB_URI || process.env.MONGODB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -60,71 +60,71 @@ io.on("connection", (socket) => {
   io.clients((error, clients) => {
     if (error) throw error;
     console.log("clients", clients);
-    io.emit('connected-to-socket', userArray)
+    io.emit("connected-to-socket", userArray);
   });
 
-  socket.on("initial-connect", (userInfo)=>{
+  socket.on("initial-connect", (userInfo) => {
     let connectionId = socket.id;
-    const emailList = userArray.map(entry => entry.email)
-    if(!emailList.includes(userInfo.email)){
+    const emailList = userArray.map((entry) => entry.email);
+    if (!emailList.includes(userInfo.email)) {
       userArray.push({ ...userInfo, connectionId });
     }
-    io.emit('updated-user-list', userArray)
-  })
+    io.emit("updated-user-list", userArray);
+  });
 
-  socket.on("user-coordinates", (coords)=>{
+  socket.on("user-coordinates", (coords) => {
     let foundUser = userArray.find((user) => user.email === coords.email);
-    userArray.splice(userArray.indexOf(foundUser), 1)
-    foundUser.lat = coords.lat
-    foundUser.lng = coords.lng
-    userArray.push(foundUser)
-    io.emit('updated-user-list', userArray)
-  })
+    userArray.splice(userArray.indexOf(foundUser), 1);
+    foundUser.lat = coords.lat;
+    foundUser.lng = coords.lng;
+    userArray.push(foundUser);
+    io.emit("updated-user-list", userArray);
+  });
 
-  socket.on("set-request", (request)=>{
+  socket.on("set-request", (request) => {
     let foundUser = userArray.find((user) => user.email === request.email);
-    userArray.splice(userArray.indexOf(foundUser), 1)
+    userArray.splice(userArray.indexOf(foundUser), 1);
     foundUser.requestBody = {
       subject: request.subject,
       description: request.description,
-      incentive: request.incentive
-    }
-    foundUser.requestHelpSent = true
-    foundUser.requestAccepted = false
-    userArray.push(foundUser)
-    io.emit('updated-user-list', userArray)
-  })
+      incentive: request.incentive,
+    };
+    foundUser.requestHelpSent = true;
+    foundUser.requestAccepted = false;
+    userArray.push(foundUser);
+    io.emit("updated-user-list", userArray);
+  });
 
-  socket.on("remove-request", (sentUser)=>{
+  socket.on("remove-request", (sentUser) => {
     let foundUser = userArray.find((user) => user.email === sentUser.email);
-    userArray.splice(userArray.indexOf(foundUser), 1)
+    userArray.splice(userArray.indexOf(foundUser), 1);
     foundUser.requestBody = {
       subject: null,
       description: null,
-      incentive: null
-    }
-    foundUser.requestHelpSent = false
-    foundUser.requestAccepted = null
-    userArray.push(foundUser)
-    io.emit('updated-user-list', userArray)
-  })
+      incentive: null,
+    };
+    foundUser.requestHelpSent = false;
+    foundUser.requestAccepted = null;
+    userArray.push(foundUser);
+    io.emit("updated-user-list", userArray);
+  });
 
-  socket.on("accept-request", (friendEmail)=>{
+  socket.on("accept-request", (friendEmail) => {
     let foundUser = userArray.find((user) => user.email === friendEmail.email);
-    userArray.splice(userArray.indexOf(foundUser), 1)
-    foundUser.requestAccepted = true
-    foundUser.acceptedBy = friendEmail.acceptedBy
-    userArray.push(foundUser)
-    io.emit('updated-user-list', userArray)
-  })
+    userArray.splice(userArray.indexOf(foundUser), 1);
+    foundUser.requestAccepted = true;
+    foundUser.acceptedBy = friendEmail.acceptedBy;
+    userArray.push(foundUser);
+    io.emit("updated-user-list", userArray);
+  });
 
-  socket.on("get-duration", (sentUser)=>{
+  socket.on("get-duration", (sentUser) => {
     let foundUser = userArray.find((user) => user.email === sentUser.email);
-    userArray.splice(userArray.indexOf(foundUser), 1)
-    foundUser.duration = sentUser.duration
-    userArray.push(foundUser)
-    io.emit('updated-user-list', userArray)
-  })
+    userArray.splice(userArray.indexOf(foundUser), 1);
+    foundUser.duration = sentUser.duration;
+    userArray.push(foundUser);
+    io.emit("updated-user-list", userArray);
+  });
 
   console.log(`A socket connection to the server has been made: ${socket.id}`);
 
@@ -132,13 +132,21 @@ io.on("connection", (socket) => {
     let disconnectUser = userArray.find(
       (user) => user.connectionId === socket.id
     );
-    console.log('Disconnected user', disconnectUser)
+    console.log("Disconnected user", disconnectUser);
     userArray.splice(userArray.indexOf(disconnectUser), 1);
-    io.emit('updated-user-list', userArray)
+    io.emit("updated-user-list", userArray);
     console.log("DISCONNECT USER ARR", userArray);
     console.log(`Connection ${socket.id} has left the building`);
   });
 });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("../client/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client", "build", "index.html"));
+  });
+}
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
