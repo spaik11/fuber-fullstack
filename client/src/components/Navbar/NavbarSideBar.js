@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { requestHelp } from '../redux/actions/authUserActions'
+import { requestHelpSwitch } from '../redux/actions/authUserActions'
 
 import Requesting from './Requesting'
 import Helping from './Helping'
@@ -36,8 +36,8 @@ export class NavbarSideBar extends Component {
 }
 const mapStateToProps = (state) => ({
    sidebar: state.sidebar.visibility,
-   requestHelpBool: state.authUser.requestHelp
+   requestHelpBool: state.authUser.requestHelpSwitch
 })
 
 
-export default connect(mapStateToProps, { requestHelp })(NavbarSideBar)
+export default connect(mapStateToProps, { requestHelpSwitch })(NavbarSideBar)

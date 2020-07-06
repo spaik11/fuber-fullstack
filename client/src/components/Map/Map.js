@@ -52,11 +52,10 @@ export class Map extends Component {
     socket.on("connect", () => {
       console.log("Connected to socket");
       this.props.setSocket(socket);
-
       if (this.props.authUser.user.username) {
         socket.emit("initial-connect", {
           ...this.props.authUser.user,
-          requestHelp: this.props.authUser.requestHelp,
+          requestHelpSent: this.props.authUser.requestHelpSent,
           lat: null,
           lng: null,
         });

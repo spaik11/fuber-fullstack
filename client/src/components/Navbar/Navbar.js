@@ -13,7 +13,7 @@ import {
   isAuthenticated,
   logout,
 } from "../redux/actions/authUserActions";
-import { requestHelp } from "../redux/actions/authUserActions";
+import { requestHelpSwitch } from "../redux/actions/authUserActions";
 import { toggleDarkMode } from "../redux/actions/darkModeActions";
 import {
   darkNavContainer,
@@ -77,15 +77,15 @@ export class Navbar extends Component {
           <img style={logoStyle} src={logo} alt="fuber logo" />
           <div style={{ fontSize: "1.6rem" }}>Fuber</div>
         </div>
-        {authUser.requestHelp !== null && (
+        {authUser.requestHelpSwitch !== null && (
           <div style={{ display: "flex", alignItems: "center", width: "120%" }}>
             <p style={this.props.isDarkMode.isDarkMode ? darkNav : lightNav}>
               Helping
             </p>
             <BlueSwitch
-              checked={!!authUser.requestHelp}
-              onChange={() => this.props.requestHelp(!authUser.requestHelp)}
-              disabled={requestAccepted}
+              checked={!!authUser.requestHelpSwitch}
+              onChange={() => this.props.requestHelpSwitch(!authUser.requestHelpSwitch)}
+              disabled={authUser.requestHelpSent}
             />
             <p style={this.props.isDarkMode.isDarkMode ? darkNav : lightNav}>
               Being Helped
@@ -139,7 +139,7 @@ export default React.memo(
   connect(mapStateToProps, {
     sidebarSwitch,
     setUserAuth,
-    requestHelp,
+    requestHelpSwitch,
     logout,
     toggleDarkMode,
   })(Navbar)

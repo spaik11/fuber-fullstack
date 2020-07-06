@@ -1,0 +1,1 @@
+export const SET_ACTIVE_MARKER = "SET_ACTIVE_MARKER";

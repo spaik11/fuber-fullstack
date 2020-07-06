@@ -5,7 +5,7 @@ import { Button } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import { requestHelp } from "../redux/actions/authUserActions";
+import { requestHelpSwitch } from "../redux/actions/authUserActions";
 import { sidebarOpen } from "../redux/actions/sidebarActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,9 +43,9 @@ function OptionModal(props) {
   const classes = useStyles();
 
   useEffect(() => {
-    const mode = localStorage.getItem("requestHelp");
+    const mode = localStorage.getItem("requestHelpSwitch");
     if (mode !== null) {
-      props.requestHelp(mode === "true");
+      props.requestHelpSwitch(mode === "true");
       props.sidebarOpen();
     }
   }, []);
@@ -71,7 +71,7 @@ function OptionModal(props) {
               <Button
                 className={classes.margin}
                 onClick={() => {
-                  props.requestHelp(false);
+                  props.requestHelpSwitch(false);
                   props.sidebarOpen();
                 }}
                 variant="contained"
@@ -83,7 +83,7 @@ function OptionModal(props) {
               <Button
                 className={classes.margin}
                 onClick={() => {
-                  props.requestHelp(false);
+                  props.requestHelpSwitch(true);
                   props.sidebarOpen();
                 }}
                 variant="contained"
@@ -105,6 +105,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  requestHelp,
+  requestHelpSwitch,
   sidebarOpen,
 })(OptionModal);

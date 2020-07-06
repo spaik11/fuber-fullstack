@@ -5,7 +5,8 @@ import jwt_decode from "jwt-decode";
 import {
   LOGIN_USER,
   LOGOUT_USER,
-  REQUEST_HELP,
+  REQUEST_HELP_SWITCH,
+  REQUEST_HELP_SENT,
   ADD_FRIEND,
   SET_SOCKET,
 } from "../constants/authUserConstants";
@@ -105,13 +106,20 @@ export const getRefreshToken = () => {
   }
 };
 
-export const requestHelp = (mode) => (dispatch) => {
-  localStorage.setItem("requestHelp", mode);
+export const requestHelpSwitch = (mode) => (dispatch) => {
+  localStorage.setItem("requestHelpSwitch", mode);
   dispatch({
-    type: REQUEST_HELP,
+    type: REQUEST_HELP_SWITCH,
     payload: mode,
   });
 };
+
+export const requestHelpSent = (bool) => (dispatch) => {
+  dispatch({
+    type: REQUEST_HELP_SENT,
+    payload: bool
+  })
+}
 
 export const loadFriends = (friends) => (dispatch) => {
   dispatch({

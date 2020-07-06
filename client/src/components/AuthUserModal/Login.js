@@ -129,7 +129,7 @@ const Login = (props) => {
         ...values,
       };
 
-      const success = await props.loginUser({
+      await props.loginUser({
         email: email.value,
         password: password.value,
         requestHelp: false,

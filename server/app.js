@@ -81,6 +81,51 @@ io.on("connection", (socket) => {
     io.emit('updated-user-list', userArray)
   })
 
+  socket.on("set-request", (request)=>{
+    let foundUser = userArray.find((user) => user.email === request.email);
+    userArray.splice(userArray.indexOf(foundUser), 1)
+    foundUser.requestBody = {
+      subject: request.subject,
+      description: request.description,
+      incentive: request.incentive
+    }
+    foundUser.requestHelpSent = true
+    foundUser.requestAccepted = false
+    userArray.push(foundUser)
+    io.emit('updated-user-list', userArray)
+  })
+
+  socket.on("remove-request", (sentUser)=>{
+    let foundUser = userArray.find((user) => user.email === sentUser.email);
+    userArray.splice(userArray.indexOf(foundUser), 1)
+    foundUser.requestBody = {
+      subject: null,
+      description: null,
+      incentive: null
+    }
+    foundUser.requestHelpSent = false
+    foundUser.requestAccepted = null
+    userArray.push(foundUser)
+    io.emit('updated-user-list', userArray)
+  })
+
+  socket.on("accept-request", (friendEmail)=>{
+    let foundUser = userArray.find((user) => user.email === friendEmail.email);
+    userArray.splice(userArray.indexOf(foundUser), 1)
+    foundUser.requestAccepted = true
+    foundUser.acceptedBy = friendEmail.acceptedBy
+    userArray.push(foundUser)
+    io.emit('updated-user-list', userArray)
+  })
+
+  socket.on("get-duration", (sentUser)=>{
+    let foundUser = userArray.find((user) => user.email === sentUser.email);
+    userArray.splice(userArray.indexOf(foundUser), 1)
+    foundUser.duration = sentUser.duration
+    userArray.push(foundUser)
+    io.emit('updated-user-list', userArray)
+  })
+
   console.log(`A socket connection to the server has been made: ${socket.id}`);
 
   socket.on("disconnect", () => {

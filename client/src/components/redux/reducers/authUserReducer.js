@@ -1,7 +1,8 @@
 import {
   LOGIN_USER,
   LOGOUT_USER,
-  REQUEST_HELP,
+  REQUEST_HELP_SWITCH,
+  REQUEST_HELP_SENT,
   ADD_FRIEND,
   SET_SOCKET,
 } from "../constants/authUserConstants";
@@ -9,9 +10,10 @@ import {
 const initialState = {
   isAuthenticated: false,
   user: {
-    username: null,
+    username: null
   },
-  requestHelp: null,
+  requestHelpSwitch: null,
+  requestHelpSent: false,
   friends: [],
   optionsModal: true,
   socket: null,
@@ -35,11 +37,16 @@ export default function (state = initialState, action) {
         isAuthenticated: false,
         user: { username: null },
       };
-    case REQUEST_HELP:
+    case REQUEST_HELP_SWITCH:
       return {
         ...state,
-        requestHelp: action.payload,
+        requestHelpSwitch: action.payload,
         optionsModal: false,
+      };
+    case REQUEST_HELP_SENT:
+      return {
+        ...state,
+        requestHelpSent: action.payload,
       };
     case ADD_FRIEND:
       return {
