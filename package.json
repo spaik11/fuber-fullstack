@@ -4,8 +4,8 @@
     "private": true,
     "scripts": {
       "start": "cd server && npm install && npm start",
-      "build": "cd ../client && npm run build",
-      "install-client": "cd ../client && npm install",
+      "build": "cd client && npm run build",
+      "install-client": "cd client && npm install",
       "heroku-postbuild": "npm run install-client && npm run build"
     }
   }
