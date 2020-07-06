@@ -34,7 +34,7 @@ app.set("view engine", "ejs");
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["https://fuber-fullstack.herokuapp.com"],
     credentials: true,
   })
 );
