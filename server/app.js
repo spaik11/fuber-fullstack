@@ -139,6 +139,10 @@ io.on("connection", (socket) => {
     console.log("DISCONNECT USER ARR", userArray);
     console.log(`Connection ${socket.id} has left the building`);
   });
+
+  socket.on("reconnect_attempt", () => {
+    socket.io.opts.transports = ["polling", "websocket"];
+  });
 });
 
 if (process.env.NODE_ENV === "production") {
