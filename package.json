@@ -1,0 +1,12 @@
+{
+    "name": "server",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+      "start": "node cd server/app.js",
+      "build": "cd client && npm run build",
+      "install-client": "cd client && npm install",
+      "heroku-postbuild": "npm run install-client && npm run build"
+    }
+  }
+  
