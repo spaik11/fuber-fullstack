@@ -64,7 +64,7 @@ export class Navbar extends Component {
   }
 
   render() {
-    const { authUser, requestAccepted } = this.props;
+    const { authUser } = this.props;
     return (
       <div
         style={
@@ -130,7 +130,6 @@ export class Navbar extends Component {
 
 const mapStateToProps = (state) => ({
   authUser: state.authUser,
-  requestAccepted: state.directions.requestAccepted,
   socket: state.authUser.socket,
   isDarkMode: state.isDarkMode,
 });

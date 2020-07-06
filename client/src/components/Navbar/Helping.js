@@ -13,7 +13,7 @@ const styledLi = {
 }
 
 function distance(lat1, lon1, lat2, lon2, unit) {
-	if ((lat1 == lat2) && (lon1 == lon2)) {
+	if ((lat1 === lat2) && (lon1 === lon2)) {
 		return 0;
 	}
 	else {
@@ -28,8 +28,8 @@ function distance(lat1, lon1, lat2, lon2, unit) {
 		dist = Math.acos(dist);
 		dist = dist * 180/Math.PI;
 		dist = dist * 60 * 1.1515;
-		if (unit=="K") { dist = dist * 1.609344 }
-		if (unit=="N") { dist = dist * 0.8684 }
+		if (unit==="K") { dist = dist * 1.609344 }
+		if (unit==="N") { dist = dist * 0.8684 }
 		return dist;
 	}
 }
@@ -60,12 +60,16 @@ export const Helping = (props) => {
                      </div>
                   )
                })}
-               <button onClick={()=> props.cancelHelp()}>Cancel</button>
+               <button onClick={
+                  ()=> {
+                     props.cancelHelp()
+                     socket.emit('cancel-help', {email: friendEmail} )
+                  }}>Cancel</button>
             </div>
          )}
          {!requestAccepted &&
             <>
-               {friendList.length<1
+               {friendList.length<2
                ? <h3 style={{textAlign: 'center'}}>Good news! No active requests</h3>
                : <>
                   <h3 style={{textAlign: 'center'}}>They need your help:</h3>
