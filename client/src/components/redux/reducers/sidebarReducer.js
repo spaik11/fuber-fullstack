@@ -1,7 +1,11 @@
-import { VISIBILITY, SIDEBAR_OPEN, SIDEBAR_CLOSE } from "../constants/sidebarConstants";
+import {
+  VISIBILITY,
+  SIDEBAR_OPEN,
+  SIDEBAR_CLOSE,
+} from "../constants/sidebarConstants";
 
 const initialState = {
-  visibility: false
+  visibility: false,
 };
 
 export default function (state = initialState, action) {
@@ -9,18 +13,18 @@ export default function (state = initialState, action) {
     case VISIBILITY:
       return {
         ...state,
-        visibility: !state.visibility
-      }
+        visibility: !state.visibility,
+      };
     case SIDEBAR_OPEN:
       return {
         ...state,
-        visibility: true
-      }
+        visibility: true,
+      };
     case SIDEBAR_CLOSE:
       return {
         ...state,
-        visibility: false
-      }
+        visibility: false,
+      };
     default:
       return state;
   }

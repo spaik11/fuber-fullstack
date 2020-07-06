@@ -1,9 +1,9 @@
-import { 
-  DIRECTIONS, 
-  USER_LOCATION, 
+import {
+  DIRECTIONS,
+  USER_LOCATION,
   CANCEL_HELP,
-  ACCEPT_REQUEST
-  } from "../constants/directionConstants";
+  ACCEPT_REQUEST,
+} from "../constants/directionConstants";
 
 const initialState = {
   directions: null,
@@ -31,16 +31,20 @@ const initialState = {
     lng: -74.006,
   },
   requestAccepted: false,
-  sidebar: false
+  sidebar: false,
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
     case DIRECTIONS:
-      if(state.directions){
-        const place1 = (state.directions.geocoded_waypoints[0].place_id === action.payload.geocoded_waypoints[0].place_id)
-        const place2 = (state.directions.geocoded_waypoints[1].place_id === action.payload.geocoded_waypoints[1].place_id)
-        if(place1 === place2)return state
+      if (state.directions) {
+        const place1 =
+          state.directions.geocoded_waypoints[0].place_id ===
+          action.payload.geocoded_waypoints[0].place_id;
+        const place2 =
+          state.directions.geocoded_waypoints[1].place_id ===
+          action.payload.geocoded_waypoints[1].place_id;
+        if (place1 === place2) return state;
       }
       return {
         ...state,
@@ -56,8 +60,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         friendLoc: action.payload,
-        requestAccepted: true
-      }
+        requestAccepted: true,
+      };
     case CANCEL_HELP:
       const friendLocCopy = state.friendLoc;
       friendLocCopy.lat = null;
