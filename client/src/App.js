@@ -7,6 +7,7 @@ import Map from "./components/Map/Map";
 import AuthUserModal from "./components/AuthUserModal/AuthUserModal";
 import OptionModal from "./components/OptionModal/OptionModal";
 import Navbar from "./components/Navbar/Navbar";
+import Chat from "./components/Chat/Chat";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import store from "./components/redux/store/store";
 import "./App.css";
@@ -20,6 +21,7 @@ export default function App() {
           style={{ height: `100%`, display: "flex", flexDirection: "column" }}>
           <Navbar />
           <Map />
+          <Chat />
         </div>
         <Switch>
           <PrivateRoute exact path="/option" component={OptionModal} />

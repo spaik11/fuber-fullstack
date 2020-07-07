@@ -55,13 +55,15 @@ app.use(express.static(path.join(__dirname, "public")));
 // app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 
-let userArray = [];
+const userArray = [];
+const chatMessages = []
 
 io.on("connection", (socket) => {
   io.clients((error, clients) => {
     if (error) throw error;
     console.log("clients", clients);
-    io.emit("connected-to-socket", userArray);
+    io.emit('connected-to-socket', userArray)
+    io.emit('get-chat-messages', chatMessages)
   });
 
   socket.on("initial-connect", (userInfo) => {
@@ -126,6 +128,21 @@ io.on("connection", (socket) => {
     userArray.push(foundUser);
     io.emit("updated-user-list", userArray);
   });
+
+  socket.on('cancel-help', (friendEmail)=>{
+    let foundUser = userArray.find((user) => user.email === friendEmail.email);
+    userArray.splice(userArray.indexOf(foundUser), 1)
+    foundUser.requestAccepted = false
+    foundUser.acceptedBy = null
+    userArray.push(foundUser)
+    io.emit('updated-user-list', userArray)
+  })
+
+  socket.on('receive-message', (message)=>{
+    if(chatMessages.length>50) chatMessages.shift()
+    chatMessages.push(message)
+    io.emit('get-chat-messages', chatMessages)
+  })
 
   console.log(`A socket connection to the server has been made: ${socket.id}`);
 
