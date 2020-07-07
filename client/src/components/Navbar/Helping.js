@@ -47,7 +47,7 @@ export const Helping = (props) => {
     userEmail,
     friendEmail,
     userLocation,
-    socket,
+    socket
   } = props;
 
   useEffect(() => {
@@ -79,7 +79,10 @@ export const Helping = (props) => {
               </div>
             );
           })}
-          <button onClick={() => props.cancelHelp()}>Cancel</button>
+          <button onClick={() => {
+             props.cancelHelp()
+             props.socket.emit('cancel-help', {email: friendEmail})
+         }}>Cancel</button>
         </div>
       )}
       {!requestAccepted && (

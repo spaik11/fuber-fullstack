@@ -42,7 +42,6 @@ export const Requesting = (props) => {
     });
   };
   const user = props.friends.find((user) => user.email === props.userEmail);
-  console.log(user);
   return (
     <div>
       {user && user.requestAccepted ? (
