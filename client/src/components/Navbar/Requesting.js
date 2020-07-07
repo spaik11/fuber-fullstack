@@ -59,6 +59,10 @@ export const Requesting = (props) => {
           <p>{incentive}</p>
           <p>Accepted by: {user.acceptedBy}</p>
           <p>ETA: {user.duration}</p>
+          <button onClick={()=>{
+            handleCancel()
+            props.socket.emit('cancel-help',{email: props.userEmail})
+          }}>Cancel request</button>
         </div>
       ) : (
         <div
