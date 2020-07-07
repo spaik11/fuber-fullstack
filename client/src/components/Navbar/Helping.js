@@ -38,7 +38,7 @@ export const Helping = (props) => {
    const { requestAccepted, estimate, friendList, userEmail, friendEmail, userLocation, socket } = props
    
    useEffect(() => {
-      if(socket){
+      if(socket && estimate.duration.text){
          socket.emit('get-duration', { duration: estimate.duration.text, email: friendEmail })
       }
    }, [estimate])
