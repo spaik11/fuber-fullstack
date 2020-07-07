@@ -12,21 +12,6 @@ export const Requesting = (props) => {
   const [description, setDescription] = useState("");
   const [incentive, setIncentive] = useState("");
 
-  //   const previousValue = (value) => {
-  //     const ref = useRef();
-
-  //     useEffect(() => {
-  //       ref.current = value;
-  //     });
-
-  //     return ref.current;
-  //   };
-
-  //   useEffect(() => {
-
-  //   },[]
-  //   )
-
   const handleChange = (event) => {
     switch (event.target.name) {
       case "subject":
