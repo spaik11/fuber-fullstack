@@ -62,7 +62,7 @@ export const Helping = (props) => {
   return (
     <div>
       {requestAccepted && (
-        <div>
+        <div style={{height: '600px', overflow: 'auto'}}>
           <p style={{ color: "green" }}>{estimate.start_address} </p>
           <p style={{ color: "red" }}>{estimate.end_address}</p>
           <p>
@@ -82,6 +82,7 @@ export const Helping = (props) => {
           <button onClick={() => {
              props.cancelHelp()
              props.socket.emit('cancel-help', {email: friendEmail})
+             props.setActiveMarker(null)
          }}>Cancel</button>
         </div>
       )}
