@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Marker, InfoWindow } from "@react-google-maps/api";
-
+import { Button } from "@material-ui/core";
 import { acceptRequest } from "../../redux/actions/directionsActions";
 import { setActiveMarker } from "../../redux/actions/activeMarkerActions";
 
@@ -57,11 +57,26 @@ export class Markers extends Component {
                     friend.requestBody && (
                       <InfoWindow zIndex={1600}>
                         <>
-                          <h4>Hi, I'm {friend.username}</h4>
-                          <p>{friend.requestBody.subject}</p>
-                          <p>{friend.requestBody.description}</p>
-                          <p>{friend.requestBody.incentive}</p>
-                          <button
+                          <h4>
+                            {friend.username.slice(0, 1).toUpperCase() +
+                              friend.username.slice(1)}{" "}
+                            Needs Help
+                          </h4>
+                          <p>
+                            <b>Subject: </b> {friend.requestBody.subject}
+                          </p>
+                          <p>
+                            <b>Description: </b>
+                            {friend.requestBody.description}
+                          </p>
+                          <p>
+                            <b>Incentive: </b>
+                            {friend.requestBody.incentive}
+                          </p>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            style={{ alignItems: "center" }}
                             onClick={() => {
                               this.props.acceptRequest({
                                 lat: friend.lat,
@@ -73,8 +88,8 @@ export class Markers extends Component {
                                 acceptedBy: userUsername,
                               });
                             }}>
-                            Accept request
-                          </button>
+                            Accept
+                          </Button>
                         </>
                       </InfoWindow>
                     )}
