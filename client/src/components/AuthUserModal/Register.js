@@ -161,6 +161,9 @@ const Register = (props) => {
         username: username.value,
         email: email.value,
         password: password.value,
+        requestHelp: false,
+        lat: props.coords.lat,
+        lng: props.coords.lng,
       });
 
       successToast("Welcome to Fuber!");
@@ -233,6 +236,7 @@ const Register = (props) => {
 const mapStateToProps = (state) => {
   return {
     authUser: state.authUser,
+    coords: state.directions.userLoc,
   };
 };
 

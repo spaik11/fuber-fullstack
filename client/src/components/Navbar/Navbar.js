@@ -6,7 +6,7 @@ import { Switch, Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { blue } from "@material-ui/core/colors";
 import NavbarSideBar from "./NavbarSideBar";
-import logo from "../../assets/fuberLogo.png";
+import logo from "../../assets/FUBER.png";
 import { sidebarSwitch } from "../redux/actions/sidebarActions";
 import {
   setUserAuth,
@@ -84,7 +84,9 @@ export class Navbar extends Component {
             </p>
             <BlueSwitch
               checked={!!authUser.requestHelpSwitch}
-              onChange={() => this.props.requestHelpSwitch(!authUser.requestHelpSwitch)}
+              onChange={() =>
+                this.props.requestHelpSwitch(!authUser.requestHelpSwitch)
+              }
               disabled={authUser.requestHelpSent}
             />
             <p style={this.props.isDarkMode.isDarkMode ? darkNav : lightNav}>

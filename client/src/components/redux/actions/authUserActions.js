@@ -19,7 +19,12 @@ export const createUser = (userInfo) => async (dispatch) => {
 
     dispatch({
       type: LOGIN_USER,
-      payload: success.data,
+      payload: {
+        ...success.data,
+        requestHelp: userInfo.requestHelp,
+        lat: userInfo.lat,
+        lng: userInfo.lng,
+      },
     });
 
     return Promise.resolve();
@@ -117,9 +122,9 @@ export const requestHelpSwitch = (mode) => (dispatch) => {
 export const requestHelpSent = (bool) => (dispatch) => {
   dispatch({
     type: REQUEST_HELP_SENT,
-    payload: bool
-  })
-}
+    payload: bool,
+  });
+};
 
 export const loadFriends = (friends) => (dispatch) => {
   dispatch({
