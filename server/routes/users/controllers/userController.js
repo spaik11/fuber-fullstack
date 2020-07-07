@@ -33,6 +33,7 @@ module.exports = {
       });
 
       createdUser = createdUser.toObject();
+      delete createdUser.userCreated;
       delete createdUser.password;
 
       res.json(createdUser);

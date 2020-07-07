@@ -5,7 +5,7 @@ const app = express();
 const socket_io = require("socket.io");
 const io = socket_io({
   transports: ["websocket"],
-  pingTimeout: 60000,
+  pingTimeout: 600000,
 });
 app.io = io;
 const path = require("path");
