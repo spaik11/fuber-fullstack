@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 
 export function Chat(props) {
 
-   const [chatOpen, setChatOpen] = useState(true)
+   const [chatOpen, setChatOpen] = useState(false)
    const [chatMessage, setChatMessage] = useState('')
    const [mousingOver, setMousingOver] = useState(false)
    const [chatLog, setChatLog] = useState([])
@@ -28,12 +28,12 @@ export function Chat(props) {
       position: 'absolute',
       left: '.3em',
       bottom: '20px',
-      width: '30em',
+      width: '25em',
       color: "#0f0f0f",
       background: "rgba(238, 238, 238, 0.8)",
       borderRadius: '15px',
       cursor: 'default',
-      maxHeight: '50em',
+      maxHeight: '30em',
       overflowY: 'auto',
       overflowX: 'hidden !important',
       visibility: chatOpen ? 'initial': 'hidden'
