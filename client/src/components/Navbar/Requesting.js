@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { TextField, Button } from "@material-ui/core";
-
 import { requestHelpSent } from "../redux/actions/authUserActions";
 
 const margin = {
@@ -12,11 +11,21 @@ export const Requesting = (props) => {
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
   const [incentive, setIncentive] = useState("");
-  const [disableRequest, setDisableRequest] = useState(true);
 
-  if (props.coords.lat) {
-    setDisableRequest(false);
-  }
+  //   const previousValue = (value) => {
+  //     const ref = useRef();
+
+  //     useEffect(() => {
+  //       ref.current = value;
+  //     });
+
+  //     return ref.current;
+  //   };
+
+  //   useEffect(() => {
+
+  //   },[]
+  //   )
 
   const handleChange = (event) => {
     switch (event.target.name) {
@@ -105,8 +114,7 @@ export const Requesting = (props) => {
               variant="contained"
               color="primary"
               style={margin}
-              onClick={() => handleCancel()}
-              disabled={disableRequest}>
+              onClick={() => handleCancel()}>
               Cancel
             </Button>
           ) : (
@@ -116,7 +124,7 @@ export const Requesting = (props) => {
               color="primary"
               style={margin}
               onClick={() => handleSubmit()}
-              disabled={disableRequest}>
+              disabled={!props.coords.lat}>
               Submit
             </Button>
           )}
