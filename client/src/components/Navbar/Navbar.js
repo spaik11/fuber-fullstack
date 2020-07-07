@@ -87,7 +87,7 @@ export class Navbar extends Component {
               onChange={() =>
                 this.props.requestHelpSwitch(!authUser.requestHelpSwitch)
               }
-              disabled={authUser.requestHelpSent}
+              disabled={authUser.requestHelpSent || this.props.requestAccepted}
             />
             <p style={this.props.isDarkMode.isDarkMode ? darkNav : lightNav}>
               Being Helped
@@ -134,6 +134,7 @@ const mapStateToProps = (state) => ({
   authUser: state.authUser,
   socket: state.authUser.socket,
   isDarkMode: state.isDarkMode,
+  requestAccepted: state.directions.requestAccepted
 });
 
 export default React.memo(

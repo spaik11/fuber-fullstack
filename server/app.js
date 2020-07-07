@@ -1,13 +1,7 @@
 const createError = require("http-errors");
 const express = require("express");
 const compression = require("compression");
-const app = express();
 const socket_io = require("socket.io");
-const io = socket_io({
-  transports: ["websocket"],
-  pingTimeout: 600000,
-});
-app.io = io;
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -19,8 +13,17 @@ const mongoose = require("mongoose");
 const usersRouter = require("./routes/users/users");
 require("dotenv").config();
 
+const app = express();
+const io = socket_io({
+  transports: ["websocket"],
+  pingTimeout: 120000,
+  pingInterval: 5000
+});
+app.io = io;
+
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  // .connect(process.env.MONGODB_URI, {
+  .connect(process.env.MONGO_DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -35,7 +38,8 @@ app.set("view engine", "ejs");
 
 app.use(
   cors({
-    origin: ["https://fuber-fullstack.herokuapp.com"],
+    // origin: ["https://fuber-fullstack.herokuapp.com"],
+    origin: ["http://localhost:3000"],
     credentials: true,
   })
 );
@@ -73,68 +77,82 @@ io.on("connection", (socket) => {
       userArray.push({ ...userInfo, connectionId });
     }
     io.emit("updated-user-list", userArray);
+    console.log('User array', userArray)
   });
 
   socket.on("user-coordinates", (coords) => {
     let foundUser = userArray.find((user) => user.email === coords.email);
-    userArray.splice(userArray.indexOf(foundUser), 1);
-    foundUser.lat = coords.lat;
-    foundUser.lng = coords.lng;
-    userArray.push(foundUser);
+    if(foundUser){
+      userArray.splice(userArray.indexOf(foundUser), 1);
+      foundUser.lat = coords.lat;
+      foundUser.lng = coords.lng;
+      userArray.push(foundUser);
+    }
     io.emit("updated-user-list", userArray);
   });
 
   socket.on("set-request", (request) => {
     let foundUser = userArray.find((user) => user.email === request.email);
-    userArray.splice(userArray.indexOf(foundUser), 1);
-    foundUser.requestBody = {
-      subject: request.subject,
-      description: request.description,
-      incentive: request.incentive,
-    };
-    foundUser.requestHelpSent = true;
-    foundUser.requestAccepted = false;
-    userArray.push(foundUser);
+    if(foundUser){
+      userArray.splice(userArray.indexOf(foundUser), 1);
+      foundUser.requestBody = {
+        subject: request.subject,
+        description: request.description,
+        incentive: request.incentive,
+      };
+      foundUser.requestHelpSent = true;
+      foundUser.requestAccepted = false;
+      userArray.push(foundUser);
+    }
     io.emit("updated-user-list", userArray);
   });
 
   socket.on("remove-request", (sentUser) => {
     let foundUser = userArray.find((user) => user.email === sentUser.email);
-    userArray.splice(userArray.indexOf(foundUser), 1);
-    foundUser.requestBody = {
-      subject: null,
-      description: null,
-      incentive: null,
-    };
-    foundUser.requestHelpSent = false;
-    foundUser.requestAccepted = null;
-    userArray.push(foundUser);
+    if(foundUser){
+      userArray.splice(userArray.indexOf(foundUser), 1);
+      foundUser.requestBody = {
+        subject: null,
+        description: null,
+        incentive: null,
+      };
+      foundUser.requestHelpSent = false;
+      foundUser.requestAccepted = null;
+      userArray.push(foundUser);
+    }
     io.emit("updated-user-list", userArray);
   });
 
   socket.on("accept-request", (friendEmail) => {
     let foundUser = userArray.find((user) => user.email === friendEmail.email);
-    userArray.splice(userArray.indexOf(foundUser), 1);
-    foundUser.requestAccepted = true;
-    foundUser.acceptedBy = friendEmail.acceptedBy;
-    userArray.push(foundUser);
+    if(foundUser){
+      userArray.splice(userArray.indexOf(foundUser), 1);
+      foundUser.requestAccepted = true;
+      foundUser.acceptedBy = friendEmail.acceptedBy;
+      userArray.push(foundUser);
+    }
     io.emit("updated-user-list", userArray);
   });
 
   socket.on("get-duration", (sentUser) => {
     let foundUser = userArray.find((user) => user.email === sentUser.email);
-    userArray.splice(userArray.indexOf(foundUser), 1);
-    foundUser.duration = sentUser.duration;
-    userArray.push(foundUser);
+    if(foundUser){
+      userArray.splice(userArray.indexOf(foundUser), 1);
+      foundUser.duration = sentUser.duration;
+      userArray.push(foundUser);
+    }
     io.emit("updated-user-list", userArray);
   });
 
   socket.on('cancel-help', (friendEmail)=>{
     let foundUser = userArray.find((user) => user.email === friendEmail.email);
-    userArray.splice(userArray.indexOf(foundUser), 1)
-    foundUser.requestAccepted = false
-    foundUser.acceptedBy = null
-    userArray.push(foundUser)
+    if(foundUser){
+      userArray.splice(userArray.indexOf(foundUser), 1)
+      foundUser.requestAccepted = false
+      foundUser.acceptedBy = null
+      userArray.push(foundUser)
+    }
+    io.emit('request-canceled')
     io.emit('updated-user-list', userArray)
   })
 
@@ -158,8 +176,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("reconnect_attempt", () => {
+    console.log('reconnect_attempt')
     socket.io.opts.transports = ["polling", "websocket"];
   });
+
+  socket.on('error', ()=>{
+    console.log(error)
+  })
 });
 
 if (process.env.NODE_ENV === "production") {

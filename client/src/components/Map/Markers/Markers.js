@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Marker, InfoWindow } from "@react-google-maps/api";
+import { Button } from "@material-ui/core";
 
 import { acceptRequest } from "../../redux/actions/directionsActions";
 import { setActiveMarker } from "../../redux/actions/activeMarkerActions";
+import { requestHelpSwitch } from "../../redux/actions/authUserActions"
 
 import personMarker from "../../../assets/darkMarker.png";
 import sosMarker from "../../../assets/sosMarker.png";
@@ -36,7 +38,10 @@ export class Markers extends Component {
         </Marker>
         {friendList &&
           friendList.map((friend) => {
-            if (friend.requestHelpSent && friend.email !== userEmail) {
+            if (friend.requestHelpSent 
+                && friend.email !== userEmail 
+                &&!friend.requestAccepted
+                 && !friend.acceptedBy) {
               return (
                 <Marker
                   key={friend.id}
@@ -54,14 +59,15 @@ export class Markers extends Component {
                   }}>
                   {activeMarker &&
                     activeMarker.id === friend.id &&
-                    friend.requestBody && (
-                      <InfoWindow zIndex={1600}>
+                    friend.requestBody && 
+                    !friend.requestAccepted && !friend.acceptedBy && (
+                      <InfoWindow zIndex={1600} onCloseClick={()=> this.props.setActiveMarker(null)}>
                         <>
                           <h4>Hi, I'm {friend.username}</h4>
                           <p>{friend.requestBody.subject}</p>
                           <p>{friend.requestBody.description}</p>
                           <p>{friend.requestBody.incentive}</p>
-                          <button
+                          <Button
                             onClick={() => {
                               this.props.acceptRequest({
                                 lat: friend.lat,
@@ -72,9 +78,13 @@ export class Markers extends Component {
                                 email: friend.email,
                                 acceptedBy: userUsername,
                               });
-                            }}>
+                              this.props.setActiveMarker(null)
+                              this.props.requestHelpSwitch(false)
+                            }}
+                            disabled={this.props.requestHelpSent}
+                            >
                             Accept request
-                          </button>
+                          </Button>
                         </>
                       </InfoWindow>
                     )}
@@ -101,6 +111,6 @@ const mapStateToProps = (state) => ({
   isDarkMode: state.isDarkMode,
 });
 
-export default connect(mapStateToProps, { acceptRequest, setActiveMarker })(
+export default connect(mapStateToProps, { acceptRequest, setActiveMarker, requestHelpSwitch })(
   Markers
 );
