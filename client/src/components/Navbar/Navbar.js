@@ -7,6 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { blue } from "@material-ui/core/colors";
 import NavbarSideBar from "./NavbarSideBar";
 import logo from "../../assets/FUBER.png";
+import darkLogo from "../../assets/DARKFUBER.png";
 import { sidebarSwitch } from "../redux/actions/sidebarActions";
 import {
   setUserAuth,
@@ -74,7 +75,7 @@ export class Navbar extends Component {
         }>
         <NavbarSideBar />
         <div style={logoContainer}>
-          <img style={logoStyle} src={logo} alt="fuber logo" />
+          <img style={logoStyle} src={this.props.isDarkMode.isDarkMode ? darkLogo : logo} alt="fuber logo" />
           <div style={{ fontSize: "1.6rem" }}>Fuber</div>
         </div>
         {authUser.requestHelpSwitch !== null && (
