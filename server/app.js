@@ -23,6 +23,7 @@ app.io = io;
 
 mongoose
   .connect(process.env.MONGODB_URI, {
+  // .connect(process.env.MONGO_DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -38,6 +39,7 @@ app.set("view engine", "ejs");
 app.use(
   cors({
     origin: ["https://fuber-fullstack.herokuapp.com"],
+    // origin: ["http://localhost:3000"],
     credentials: true,
   })
 );
@@ -167,7 +169,9 @@ io.on("connection", (socket) => {
       (user) => user.connectionId === socket.id
     );
     console.log("Disconnected user", disconnectUser);
-    userArray.splice(userArray.indexOf(disconnectUser), 1);
+    if(disconnectUser !== undefined){
+      userArray.splice(userArray.indexOf(disconnectUser), 1);
+    }
     io.emit("updated-user-list", userArray);
     console.log("DISCONNECT USER ARR", userArray);
     console.log(`Connection ${socket.id} has left the building`);
