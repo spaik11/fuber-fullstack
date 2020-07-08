@@ -54,10 +54,17 @@ export const Requesting = (props) => {
       {user && user.requestAccepted ? (
         <div
           style={{ display: "flex", flexDirection: "column", margin: "5px" }}>
+          <h4 style={{ fontWeight: "bold" }}>Subject</h4>
           <p>{subject}</p>
+          <h4 style={{ fontWeight: "bold" }}>Description</h4>
           <p>{description}</p>
+          <h4 style={{ fontWeight: "bold" }}>Incentive</h4>
           <p>{incentive}</p>
-          <p>Accepted by: {user.acceptedBy}</p>
+          <p>
+            Accepted by:{" "}
+            {user.acceptedBy.slice(0, 1).toUpperCase() +
+              user.acceptedBy.slice(1)}
+          </p>
           <p>ETA: {user.duration}</p>
           <button onClick={()=>{
             handleCancel()

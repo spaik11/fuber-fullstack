@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import parse from "html-react-parser";
-
+import { Button } from "@material-ui/core";
 import { cancelHelp } from "../redux/actions/directionsActions";
 import { setActiveMarker } from "../redux/actions/activeMarkerActions";
 
@@ -47,7 +47,7 @@ export const Helping = (props) => {
     userEmail,
     friendEmail,
     userLocation,
-    socket
+    socket,
   } = props;
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export const Helping = (props) => {
   return (
     <div>
       {requestAccepted && (
-        <div style={{height: '600px', overflow: 'auto'}}>
+        <div style={{ height: "600px", overflow: "auto" }}>
           <p style={{ color: "green" }}>{estimate.start_address} </p>
           <p style={{ color: "red" }}>{estimate.end_address}</p>
           <p>
@@ -79,12 +79,17 @@ export const Helping = (props) => {
               </div>
             );
           })}
-          <button onClick={() => {
-             props.cancelHelp()
-             props.socket.emit('cancel-help', {email: friendEmail})
-             props.setActiveMarker(null)
-         }} 
-         >Cancel</button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ alignItems: "center" }}
+            onClick={() => {
+              props.cancelHelp();
+              props.socket.emit("cancel-help", { email: friendEmail });
+              props.setActiveMarker(null);
+            }}>
+            Cancel
+          </Button>
         </div>
       )}
       {!requestAccepted && (
@@ -107,7 +112,10 @@ export const Helping = (props) => {
                         <li
                           style={styledLi}
                           onClick={() => props.setActiveMarker(friend)}>
-                          <div>{friend.username}</div>
+                          <div>
+                            {friend.username.slice(0, 1).toUpperCase() +
+                              friend.username.slice(1)}
+                          </div>
                           <div>
                             {distance(
                               userLocation.lat,
