@@ -103,7 +103,10 @@ export const Helping = (props) => {
               <h3 style={{ textAlign: "center" }}>They need your help:</h3>
               <ul style={{ listStyleType: "none" }}>
                 {friendList.map((friend) => {
-                  if (friend.email !== userEmail && friend.requestHelpSent) {
+                  if (friend.email !== userEmail 
+                     && friend.requestHelpSent 
+                     &&!friend.requestAccepted
+                     && !friend.acceptedBy) {
                     return (
                       <React.Fragment key={friend.id}>
                         <li
