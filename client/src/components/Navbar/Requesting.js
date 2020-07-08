@@ -66,10 +66,12 @@ export const Requesting = (props) => {
               user.acceptedBy.slice(1)}
           </p>
           <p>ETA: {user.duration}</p>
-          <button onClick={()=>{
+          
+          {/* Button doesn't work as intended. 
+            <button onClick={()=>{
             handleCancel()
             props.socket.emit('cancel-help',{email: props.userEmail})
-          }}>Cancel request</button>
+          }}>Cancel request</button> */}
         </div>
       ) : (
         <div

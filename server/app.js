@@ -22,8 +22,7 @@ const io = socket_io({
 app.io = io;
 
 mongoose
-  // .connect(process.env.MONGODB_URI, {
-  .connect(process.env.MONGO_DB, {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -38,8 +37,7 @@ app.set("view engine", "ejs");
 
 app.use(
   cors({
-    // origin: ["https://fuber-fullstack.herokuapp.com"],
-    origin: ["http://localhost:3000"],
+    origin: ["https://fuber-fullstack.herokuapp.com"],
     credentials: true,
   })
 );
