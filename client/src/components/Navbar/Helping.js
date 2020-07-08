@@ -62,7 +62,13 @@ export const Helping = (props) => {
   return (
     <div>
       {requestAccepted && (
-        <div style={{ height: "600px", overflow: "auto" }}>
+        <div
+          style={{
+            height: "600px",
+            overflow: "auto",
+            display: "flex",
+            flexDirection: "column",
+          }}>
           <p style={{ color: "green" }}>{estimate.start_address} </p>
           <p style={{ color: "red" }}>{estimate.end_address}</p>
           <p>
@@ -103,10 +109,12 @@ export const Helping = (props) => {
               <h3 style={{ textAlign: "center" }}>They need your help:</h3>
               <ul style={{ listStyleType: "none" }}>
                 {friendList.map((friend) => {
-                  if (friend.email !== userEmail 
-                     && friend.requestHelpSent 
-                     &&!friend.requestAccepted
-                     && !friend.acceptedBy) {
+                  if (
+                    friend.email !== userEmail &&
+                    friend.requestHelpSent &&
+                    !friend.requestAccepted &&
+                    !friend.acceptedBy
+                  ) {
                     return (
                       <React.Fragment key={friend.id}>
                         <li

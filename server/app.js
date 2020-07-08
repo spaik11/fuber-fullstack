@@ -17,13 +17,13 @@ const app = express();
 const io = socket_io({
   transports: ["websocket"],
   pingTimeout: 120000,
-  pingInterval: 5000
+  pingInterval: 5000,
 });
 app.io = io;
 
 mongoose
   .connect(process.env.MONGODB_URI, {
-  // .connect(process.env.MONGO_DB, {
+    // .connect(process.env.MONGO_DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -60,14 +60,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/users", usersRouter);
 
 const userArray = [];
-const chatMessages = []
+const chatMessages = [];
 
 io.on("connection", (socket) => {
   io.clients((error, clients) => {
     if (error) throw error;
     console.log("clients", clients);
-    io.emit('connected-to-socket', userArray)
-    io.emit('get-chat-messages', chatMessages)
+    io.emit("connected-to-socket", userArray);
+    io.emit("get-chat-messages", chatMessages);
   });
 
   socket.on("initial-connect", (userInfo) => {
@@ -77,12 +77,12 @@ io.on("connection", (socket) => {
       userArray.push({ ...userInfo, connectionId });
     }
     io.emit("updated-user-list", userArray);
-    console.log('User array', userArray)
+    console.log("User array", userArray);
   });
 
   socket.on("user-coordinates", (coords) => {
     let foundUser = userArray.find((user) => user.email === coords.email);
-    if(foundUser){
+    if (foundUser) {
       userArray.splice(userArray.indexOf(foundUser), 1);
       foundUser.lat = coords.lat;
       foundUser.lng = coords.lng;
@@ -93,7 +93,7 @@ io.on("connection", (socket) => {
 
   socket.on("set-request", (request) => {
     let foundUser = userArray.find((user) => user.email === request.email);
-    if(foundUser){
+    if (foundUser) {
       userArray.splice(userArray.indexOf(foundUser), 1);
       foundUser.requestBody = {
         subject: request.subject,
@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
 
   socket.on("remove-request", (sentUser) => {
     let foundUser = userArray.find((user) => user.email === sentUser.email);
-    if(foundUser){
+    if (foundUser) {
       userArray.splice(userArray.indexOf(foundUser), 1);
       foundUser.requestBody = {
         subject: null,
@@ -125,7 +125,7 @@ io.on("connection", (socket) => {
 
   socket.on("accept-request", (friendEmail) => {
     let foundUser = userArray.find((user) => user.email === friendEmail.email);
-    if(foundUser){
+    if (foundUser) {
       userArray.splice(userArray.indexOf(foundUser), 1);
       foundUser.requestAccepted = true;
       foundUser.acceptedBy = friendEmail.acceptedBy;
@@ -136,7 +136,7 @@ io.on("connection", (socket) => {
 
   socket.on("get-duration", (sentUser) => {
     let foundUser = userArray.find((user) => user.email === sentUser.email);
-    if(foundUser){
+    if (foundUser) {
       userArray.splice(userArray.indexOf(foundUser), 1);
       foundUser.duration = sentUser.duration;
       userArray.push(foundUser);
@@ -144,23 +144,23 @@ io.on("connection", (socket) => {
     io.emit("updated-user-list", userArray);
   });
 
-  socket.on('cancel-help', (friendEmail)=>{
+  socket.on("cancel-help", (friendEmail) => {
     let foundUser = userArray.find((user) => user.email === friendEmail.email);
-    if(foundUser){
-      userArray.splice(userArray.indexOf(foundUser), 1)
-      foundUser.requestAccepted = false
-      foundUser.acceptedBy = null
-      userArray.push(foundUser)
+    if (foundUser) {
+      userArray.splice(userArray.indexOf(foundUser), 1);
+      foundUser.requestAccepted = false;
+      foundUser.acceptedBy = null;
+      userArray.push(foundUser);
     }
-    io.emit('request-canceled')
-    io.emit('updated-user-list', userArray)
-  })
+    io.emit("request-canceled");
+    io.emit("updated-user-list", userArray);
+  });
 
-  socket.on('receive-message', (message)=>{
-    if(chatMessages.length>50) chatMessages.shift()
-    chatMessages.push(message)
-    io.emit('get-chat-messages', chatMessages)
-  })
+  socket.on("receive-message", (message) => {
+    if (chatMessages.length > 50) chatMessages.shift();
+    chatMessages.push(message);
+    io.emit("get-chat-messages", chatMessages);
+  });
 
   console.log(`A socket connection to the server has been made: ${socket.id}`);
 
@@ -169,7 +169,7 @@ io.on("connection", (socket) => {
       (user) => user.connectionId === socket.id
     );
     console.log("Disconnected user", disconnectUser);
-    if(disconnectUser !== undefined){
+    if (disconnectUser !== undefined) {
       userArray.splice(userArray.indexOf(disconnectUser), 1);
     }
     io.emit("updated-user-list", userArray);
@@ -178,13 +178,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("reconnect_attempt", () => {
-    console.log('reconnect_attempt')
+    console.log("reconnect_attempt");
     socket.io.opts.transports = ["polling", "websocket"];
   });
 
-  socket.on('error', ()=>{
-    console.log(error)
-  })
+  socket.on("error", () => {
+    console.log(error);
+  });
 });
 
 if (process.env.NODE_ENV === "production") {

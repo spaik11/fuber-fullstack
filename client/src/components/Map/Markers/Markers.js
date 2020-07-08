@@ -5,7 +5,7 @@ import { Button } from "@material-ui/core";
 
 import { acceptRequest } from "../../redux/actions/directionsActions";
 import { setActiveMarker } from "../../redux/actions/activeMarkerActions";
-import { requestHelpSwitch } from "../../redux/actions/authUserActions"
+import { requestHelpSwitch } from "../../redux/actions/authUserActions";
 
 import personMarker from "../../../assets/darkMarker.png";
 import sosMarker from "../../../assets/sosMarker.png";
@@ -38,10 +38,12 @@ export class Markers extends Component {
         </Marker>
         {friendList &&
           friendList.map((friend) => {
-            if (friend.requestHelpSent 
-                && friend.email !== userEmail 
-                &&!friend.requestAccepted
-                 && !friend.acceptedBy) {
+            if (
+              friend.requestHelpSent &&
+              friend.email !== userEmail &&
+              !friend.requestAccepted &&
+              !friend.acceptedBy
+            ) {
               return (
                 <Marker
                   key={friend.id}
@@ -59,10 +61,14 @@ export class Markers extends Component {
                   }}>
                   {activeMarker &&
                     activeMarker.id === friend.id &&
-                    friend.requestBody && 
-                    !friend.requestAccepted && !friend.acceptedBy && (
-                      <InfoWindow zIndex={1600} onCloseClick={()=> this.props.setActiveMarker(null)}>
-                        <>
+                    friend.requestBody &&
+                    !friend.requestAccepted &&
+                    !friend.acceptedBy && (
+                      <InfoWindow
+                        zIndex={1600}
+                        onCloseClick={() => this.props.setActiveMarker(null)}>
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}>
                           <h4>
                             {friend.username.slice(0, 1).toUpperCase() +
                               friend.username.slice(1)}{" "}
@@ -93,14 +99,13 @@ export class Markers extends Component {
                                 email: friend.email,
                                 acceptedBy: userUsername,
                               });
-                              this.props.setActiveMarker(null)
-                              this.props.requestHelpSwitch(false)
+                              this.props.setActiveMarker(null);
+                              this.props.requestHelpSwitch(false);
                             }}
-                            disabled={this.props.requestHelpSent}
-                            >
+                            disabled={this.props.requestHelpSent}>
                             Accept
                           </Button>
-                        </>
+                        </div>
                       </InfoWindow>
                     )}
                 </Marker>
@@ -126,6 +131,8 @@ const mapStateToProps = (state) => ({
   isDarkMode: state.isDarkMode,
 });
 
-export default connect(mapStateToProps, { acceptRequest, setActiveMarker, requestHelpSwitch })(
-  Markers
-);
+export default connect(mapStateToProps, {
+  acceptRequest,
+  setActiveMarker,
+  requestHelpSwitch,
+})(Markers);

@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import {
   getUserLocation,
   getDirections,
-  cancelHelp
+  cancelHelp,
 } from "../redux/actions/directionsActions";
 import { loadFriends, setSocket } from "../redux/actions/authUserActions";
 import { toggleDarkMode } from "../redux/actions/darkModeActions";
@@ -68,9 +68,9 @@ export class Map extends Component {
       this.props.loadFriends(userArray);
     });
 
-    socket.on('request-canceled',()=>{
-      this.props.cancelHelp()
-    })
+    socket.on("request-canceled", () => {
+      this.props.cancelHelp();
+    });
   };
 
   receiveUserCoordinates = (socket) => {
@@ -171,6 +171,6 @@ export default React.memo(
     loadFriends,
     setSocket,
     toggleDarkMode,
-    cancelHelp
+    cancelHelp,
   })(Map)
 );
