@@ -23,7 +23,7 @@
     "mongoose": "^5.9.20",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.4",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "utf-8-validate": "^5.0.2",
     "validator": "^13.1.1",
     "ws": "^7.3.1",
